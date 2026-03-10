@@ -248,8 +248,27 @@
       setLoading(true);
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
-        await auth.signInWithRedirect(provider);
+        // iOS standalone PWA ne podržava popup, koristi redirect
+        const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        if (isStandalone) {
+          await auth.signInWithRedirect(provider);
+        } else {
+          const result = await auth.signInWithPopup(provider);
+          if (result?.user) {
+            const uid = result.user.uid;
+            const userDocSnap = await db.collection("users").doc(uid).get();
+            if (!userDocSnap.exists) {
+              const displayName = result.user.displayName || result.user.email.split("@")[0];
+              await db.collection("users").doc(uid).set({
+                email: result.user.email,
+                displayName: displayName,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+          }
+        }
       } catch (err) {
+        console.error("Google Sign-In error:", err);
         setError(mapFirebaseError(err.code));
         setLoading(false);
       }
