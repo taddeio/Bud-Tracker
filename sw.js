@@ -9,7 +9,7 @@
 // 5. localStorage (svi financijski podatci) se NE dira!
 // ═══════════════════════════════════════════════════
 
-const CACHE_VERSION = 'budzet-v2';
+const CACHE_VERSION = 'budzet-v3';
 
 const ASSETS_TO_CACHE = [
   './',

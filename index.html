@@ -102,11 +102,22 @@ const CATEGORIES = [
   { id: "housing", label: "Stanarina / rata", icon: "🏠", color: "#3D405B" },
   { id: "transport", label: "Auto & prijevoz", icon: "🚗", color: "#81B29A" },
   { id: "kids", label: "Djeca", icon: "👧", color: "#F2CC8F" },
+  { id: "bills", label: "Režije & računi", icon: "💡", color: "#6B7FD7" },
+  { id: "health", label: "Zdravlje", icon: "🏥", color: "#E88DA0" },
+  { id: "clothes", label: "Odjeća & obuća", icon: "👕", color: "#9B8EC4" },
+  { id: "fun", label: "Zabava & izlasci", icon: "🎉", color: "#D4915D" },
+  { id: "savings", label: "Štednja", icon: "🐷", color: "#5DADE2" },
+  { id: "other", label: "Ostalo", icon: "📦", color: "#8D8A85" },
 ];
 const MEMBERS = [
   { id: "shared", label: "Zajedničko", icon: "👨‍👩‍👧‍👦", color: "#81B29A" },
   { id: "member1", label: "Ja", icon: "👤", color: "#E07A5F" },
   { id: "member2", label: "Partner/ica", icon: "👤", color: "#3D405B" },
+];
+const INC_CATEGORIES = [
+  { id: "salary", label: "Plaća", icon: "💰", color: "#81B29A" },
+  { id: "freelance", label: "Honorar", icon: "💼", color: "#6B7FD7" },
+  { id: "other_inc", label: "Ostalo", icon: "📥", color: "#8D8A85" },
 ];
 const MONTHS = ["Siječanj","Veljača","Ožujak","Travanj","Svibanj","Lipanj","Srpanj","Kolovoz","Rujan","Listopad","Studeni","Prosinac"];
 const fmt = (n) => new Intl.NumberFormat("hr-HR", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
@@ -310,16 +321,20 @@ function App() {
           {/* LIST TAB */}
           {curInc.length > 0 && (
             <div style={cd}><h3 style={ct}>Prihodi</h3>
-              {curInc.sort((a,b) => new Date(b.date) - new Date(a.date)).map(inc => (
-                <div key={inc.id} style={li}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 500 }}>{inc.note || "Prihod"}</div>
-                    <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(inc.date).toLocaleDateString("hr-HR")}{inc.member ? " · " + (MEMBERS.find(m => m.id === inc.member) || {}).label : ""}</div>
+              {curInc.sort((a,b) => new Date(b.date) - new Date(a.date)).map(inc => {
+                const icat = INC_CATEGORIES.find(c => c.id === inc.category);
+                return (
+                  <div key={inc.id} style={li}>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: icat ? icat.color + "18" : "#81B29A18", fontSize: 18, flexShrink: 0 }}>{icat ? icat.icon : "💰"}</div>
+                    <div style={{ flex: 1, marginLeft: 10 }}>
+                      <div style={{ fontSize: 14, fontWeight: 500 }}>{inc.note || (icat ? icat.label : "Prihod")}</div>
+                      <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(inc.date).toLocaleDateString("hr-HR")}{inc.member ? " · " + (MEMBERS.find(m => m.id === inc.member) || {}).label : ""}</div>
+                    </div>
+                    <span style={{ fontWeight: 600, color: "#81B29A", fontSize: 14 }}>+{fmt(inc.amount)}</span>
+                    <button onClick={() => delInc(inc.id)} style={db}>✕</button>
                   </div>
-                  <span style={{ fontWeight: 600, color: "#81B29A", fontSize: 14 }}>+{fmt(inc.amount)}</span>
-                  <button onClick={() => delInc(inc.id)} style={db}>✕</button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
           {curExp.length > 0 && (
@@ -416,20 +431,26 @@ function ExpenseModal({ onAdd, onClose, month, year }) {
 /* ──── Income Modal ──── */
 function IncomeModal({ onAdd, onClose, month, year }) {
   const [amt, setAmt] = useState("");
+  const [cat, setCat] = useState("salary");
   const [mem, setMem] = useState("shared");
   const [note, setNote] = useState("");
   const [day, setDay] = useState(String(new Date().getDate()));
-  const go = () => { const a = parseFloat(amt); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, member: mem, note: note, date: new Date(year, month, d).toISOString() }); };
+  const go = () => { const a = parseFloat(amt); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, category: cat, member: mem, note: note, date: new Date(year, month, d).toISOString() }); };
   return (
     <Modal onClose={onClose} title="Novi prihod" color="#81B29A">
       <Field label="Iznos (€)"><input type="number" value={amt} onChange={e => setAmt(e.target.value)} placeholder="0" style={inp} autoFocus inputMode="decimal" /></Field>
       <Field label="Dan u mjesecu"><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inp, width: 80 }} inputMode="numeric" /></Field>
+      <Field label="Vrsta prihoda">
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {INC_CATEGORIES.map(c => <Chip key={c.id} active={cat === c.id} color={c.color} onClick={() => setCat(c.id)}>{c.icon} {c.label}</Chip>)}
+        </div>
+      </Field>
       <Field label="Tko?">
         <div style={{ display: "flex", gap: 6 }}>
           {MEMBERS.map(m => <Chip key={m.id} active={mem === m.id} color={m.color} onClick={() => setMem(m.id)}>{m.icon} {m.label}</Chip>)}
         </div>
       </Field>
-      <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Plaća" style={inp} /></Field>
+      <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Plaća ožujak" style={inp} /></Field>
       <button onClick={go} style={{ ...sub, background: "#81B29A" }}>Dodaj prihod</button>
     </Modal>
   );
@@ -473,6 +494,39 @@ const sub = { width: "100%", padding: "14px", borderRadius: 14, border: "none", 
 const sb = { width: "100%", padding: "14px", borderRadius: 14, border: "none", background: "rgba(61,64,91,0.06)", color: "#3D405B", fontSize: 14, fontWeight: 500, textAlign: "left" };
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+<script>
+// ──── Service Worker Registration ────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js').then(function(reg) {
+      // Check for updates every 30 minutes
+      setInterval(function() { reg.update(); }, 1800000);
+
+      reg.addEventListener('updatefound', function() {
+        var newSW = reg.installing;
+        newSW.addEventListener('statechange', function() {
+          if (newSW.state === 'activated') {
+            var banner = document.getElementById('update-banner');
+            if (banner) banner.classList.add('visible');
+          }
+        });
+      });
+    }).catch(function(err) {
+      console.log('SW registration failed:', err);
+    });
+
+    // Listen for SW controller change (new version activated)
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (!refreshing) {
+        refreshing = true;
+        // Don't auto-reload, let the banner handle it
+      }
+    });
+  });
+}
 </script>
 
 </body>
