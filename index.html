@@ -1061,7 +1061,7 @@
                         <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(inc.date).toLocaleDateString("hr-HR")}{mem ? " · " + mem.label : ""}</div>
                       </div>
                       <span style={{ fontWeight: 600, color: "#81B29A", fontSize: 14 }}>+{fmt(inc.amount)}</span>
-                      <button onClick={() => delInc(inc.id)} style={db}>✕</button>
+                      <button onClick={() => delInc(inc.id)} style={delBtn}>✕</button>
                     </div>
                   );
                 })}
@@ -1080,7 +1080,7 @@
                         <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(exp.date).toLocaleDateString("hr-HR")}{mem ? " · " + mem.label : ""}</div>
                       </div>
                       <span style={{ fontWeight: 600, color: "#E07A5F", fontSize: 14 }}>-{fmt(exp.amount)}</span>
-                      <button onClick={() => delExp(exp.id)} style={db}>✕</button>
+                      <button onClick={() => delExp(exp.id)} style={delBtn}>✕</button>
                     </div>
                   );
                 })}
@@ -1227,7 +1227,7 @@
   const nb = { background: "rgba(61,64,91,0.07)", border: "none", width: 36, height: 36, borderRadius: 10, fontSize: 13, color: "#3D405B", display: "flex", alignItems: "center", justifyContent: "center" };
   const fb = { display: "flex", alignItems: "center", gap: 6, padding: "12px 22px", borderRadius: 18, border: "none", color: "#fff", fontWeight: 600, boxShadow: "0 6px 24px rgba(61,64,91,0.18)" };
   const li = { display: "flex", alignItems: "center", gap: 8, padding: "12px 0", borderBottom: "1px solid rgba(61,64,91,0.06)" };
-  const db = { background: "none", border: "none", color: "#BDB8B0", fontSize: 14, padding: "4px 8px", borderRadius: 6, marginLeft: 4 };
+  const delBtn = { background: "none", border: "none", color: "#BDB8B0", fontSize: 14, padding: "4px 8px", borderRadius: 6, marginLeft: 4 };
   const inp = { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid rgba(61,64,91,0.12)", fontSize: 15, fontFamily: "'DM Sans', sans-serif", color: "#3D405B", background: "#fff", outline: "none", boxSizing: "border-box" };
   const sub = { width: "100%", padding: "14px", borderRadius: 14, border: "none", color: "#fff", fontSize: 15, fontWeight: 600, marginTop: 8 };
   const sub_primary = { ...sub, background: "#3D405B" };
