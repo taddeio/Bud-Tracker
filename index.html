@@ -1,74 +1,96 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Obiteljski Budžet</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Obiteljski Budžet</title>
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Budžet">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#FAF6F1">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Budžet">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#FAF6F1">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&family=Fraunces:opsz,wght@9..144,400;9..144,700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&family=Fraunces:opsz,wght@9..144,400;9..144,700&display=swap" rel="stylesheet">
 
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body, #root { height: 100%; }
-  body {
-    font-family: 'DM Sans', -apple-system, sans-serif;
-    background: linear-gradient(165deg, #FAF6F1 0%, #F0EBE3 50%, #E8E0D5 100%);
-    color: #3D405B;
-    -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    overscroll-behavior: none;
-  }
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-  input[type="number"] { -moz-appearance: textfield; }
-  input:focus { border-color: rgba(61,64,91,0.3) !important; outline: none; }
-  button { cursor: pointer; -webkit-tap-highlight-color: transparent; font-family: 'DM Sans', sans-serif; }
-  button:active { transform: scale(0.97); }
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: linear-gradient(165deg, #FAF6F1 0%, #F0EBE3 50%, #E8E0D5 100%);
+      color: #3D405B;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      overscroll-behavior: none;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+    input:focus { border-color: rgba(61,64,91,0.3) !important; outline: none; }
+    button { cursor: pointer; -webkit-tap-highlight-color: transparent; font-family: 'DM Sans', sans-serif; }
+    button:active { transform: scale(0.97); }
 
-  .update-banner {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
-    background: #3D405B; color: #FAF6F1;
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    padding: 14px 20px; padding-top: calc(14px + env(safe-area-inset-top));
-    font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
-    transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  .update-banner.visible { transform: translateY(0); }
-  .update-banner button {
-    background: #81B29A; color: #fff; border: none; padding: 6px 16px;
-    border-radius: 8px; font-size: 13px; font-weight: 600;
-  }
+    .update-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      background: #3D405B; color: #FAF6F1;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 14px 20px; padding-top: calc(14px + env(safe-area-inset-top));
+      font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+      transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .update-banner.visible { transform: translateY(0); }
+    .update-banner button {
+      background: #81B29A; color: #fff; border: none; padding: 6px 16px;
+      border-radius: 8px; font-size: 13px; font-weight: 600;
+    }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-  }
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-  }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-  /* Donut chart via conic-gradient */
-  .donut {
-    width: 110px; height: 110px; border-radius: 50%; position: relative; flex-shrink: 0;
-  }
-  .donut::after {
-    content: ''; position: absolute; top: 25%; left: 25%; width: 50%; height: 50%;
-    border-radius: 50%; background: rgba(255,255,255,0.65);
-  }
-</style>
+    /* Donut chart via conic-gradient */
+    .donut {
+      width: 110px; height: 110px; border-radius: 50%; position: relative; flex-shrink: 0;
+    }
+    .donut::after {
+      content: ''; position: absolute; top: 25%; left: 25%; width: 50%; height: 50%;
+      border-radius: 50%; background: rgba(255,255,255,0.65);
+    }
+
+    .spinner {
+      border: 4px solid rgba(61, 64, 91, 0.1);
+      border-top: 4px solid #3D405B;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100%;
+      background: linear-gradient(165deg, #FAF6F1 0%, #F0EBE3 50%, #E8E0D5 100%);
+    }
+  </style>
 </head>
 <body>
 <div id="update-banner" class="update-banner">
@@ -93,11 +115,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 
-<!-- Firebase SDK (compat for non-module usage) -->
+<!-- Firebase SDK (compat version) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <script>
-  // Initialize Firebase
+  // Initialize Firebase BEFORE Babel/React code
   firebase.initializeApp({
     apiKey: "AIzaSyBUfqZ0XjCfFwYvXo8Bx7TnwJy5ustU0ZI",
     authDomain: "obiteljski-budzet.firebaseapp.com",
@@ -107,499 +131,1121 @@
     appId: "1:442640773685:web:199a260903945ff47b377c"
   });
   window.db = firebase.firestore();
-  // Enable offline persistence
+  window.auth = firebase.auth();
   window.db.enablePersistence({ synchronizeTabs: true }).catch(function(err) {
     console.log("Firestore persistence error:", err.code);
   });
 </script>
 
-<script type="text/babel" data-type="module">
-const { useState, useEffect, useRef } = React;
+<script type="text/babel">
+  const { useState, useEffect, useRef, useCallback } = React;
 
-/* ──── Constants ──── */
-const CATEGORIES = [
-  { id: "food", label: "Hrana & kućanstvo", icon: "🛒", color: "#E07A5F" },
-  { id: "housing", label: "Stanarina / rata", icon: "🏠", color: "#3D405B" },
-  { id: "transport", label: "Auto & prijevoz", icon: "🚗", color: "#81B29A" },
-  { id: "kids", label: "Djeca", icon: "👧", color: "#F2CC8F" },
-  { id: "bills", label: "Režije & računi", icon: "💡", color: "#6B7FD7" },
-  { id: "health", label: "Zdravlje", icon: "🏥", color: "#E88DA0" },
-  { id: "clothes", label: "Odjeća & obuća", icon: "👕", color: "#9B8EC4" },
-  { id: "fun", label: "Zabava & izlasci", icon: "🎉", color: "#D4915D" },
-  { id: "savings", label: "Štednja", icon: "🐷", color: "#5DADE2" },
-  { id: "other", label: "Ostalo", icon: "📦", color: "#8D8A85" },
-];
-const MEMBERS = [
-  { id: "shared", label: "Zajedničko", icon: "👨‍👩‍👧‍👦", color: "#81B29A" },
-  { id: "member1", label: "Ja", icon: "👤", color: "#E07A5F" },
-  { id: "member2", label: "Partner/ica", icon: "👤", color: "#3D405B" },
-];
-const INC_CATEGORIES = [
-  { id: "salary", label: "Plaća", icon: "💰", color: "#81B29A" },
-  { id: "freelance", label: "Honorar", icon: "💼", color: "#6B7FD7" },
-  { id: "other_inc", label: "Ostalo", icon: "📥", color: "#8D8A85" },
-];
-const MONTHS = ["Siječanj","Veljača","Ožujak","Travanj","Svibanj","Lipanj","Srpanj","Kolovoz","Rujan","Listopad","Studeni","Prosinac"];
-const fmt = (n) => new Intl.NumberFormat("hr-HR", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+  const auth = window.auth;
+  const db = window.db;
 
-/* ──── Persistence (Firestore + localStorage fallback) ──── */
-const DB = "family_finance_v2";
-const FIRESTORE_DOC = "families/tadic"; // Single family document
+  // Constants
+  const EXPENSE_CATEGORIES = [
+    { id: "food", label: "Hrana & kućanstvo", icon: "🛒", color: "#E07A5F" },
+    { id: "housing", label: "Stanarina / rata", icon: "🏠", color: "#3D405B" },
+    { id: "transport", label: "Auto & prijevoz", icon: "🚗", color: "#81B29A" },
+    { id: "kids", label: "Djeca", icon: "👧", color: "#F2CC8F" },
+    { id: "bills", label: "Režije & računi", icon: "💡", color: "#6B7FD7" },
+    { id: "health", label: "Zdravlje", icon: "🏥", color: "#E88DA0" },
+    { id: "clothes", label: "Odjeća & obuća", icon: "👕", color: "#9B8EC4" },
+    { id: "fun", label: "Zabava & izlasci", icon: "🎉", color: "#D4915D" },
+    { id: "savings", label: "Štednja", icon: "🐷", color: "#5DADE2" },
+    { id: "other", label: "Ostalo", icon: "📦", color: "#8D8A85" },
+  ];
 
-// localStorage helpers (offline fallback)
-const loadLocal = () => { try { const d = JSON.parse(localStorage.getItem(DB)); if (d) return { expenses: d.expenses || [], incomes: d.incomes || [] }; } catch {} return { expenses: [], incomes: [] }; };
-const saveLocal = (d) => { try { localStorage.setItem(DB, JSON.stringify(d)); } catch {} };
+  const INCOME_CATEGORIES = [
+    { id: "salary", label: "Plaća", icon: "💰", color: "#81B29A" },
+    { id: "freelance", label: "Honorar", icon: "💼", color: "#6B7FD7" },
+    { id: "other_inc", label: "Ostalo", icon: "📥", color: "#8D8A85" },
+  ];
 
-// Firestore helpers
-const fsRef = () => window.db ? window.db.doc(FIRESTORE_DOC) : null;
+  const MEMBER_COLORS = ["#E07A5F", "#3D405B", "#81B29A", "#6B7FD7", "#9B8EC4", "#F2CC8F", "#E88DA0", "#D4915D"];
+  const MONTHS = ["Siječanj","Veljača","Ožujak","Travanj","Svibanj","Lipanj","Srpanj","Kolovoz","Rujan","Listopad","Studeni","Prosinac"];
 
-const saveToFirestore = (d) => {
-  const ref = fsRef();
-  if (!ref) return;
-  ref.set({ expenses: d.expenses, incomes: d.incomes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
-    .catch(err => console.log("Firestore save error:", err));
-};
+  // Helper functions
+  const fmt = (n) => new Intl.NumberFormat("hr-HR", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
-// Merge: combine local + remote, deduplicate by id
-const mergeData = (local, remote) => {
-  const mergeArr = (a, b) => {
-    const map = new Map();
-    a.forEach(item => map.set(item.id, item));
-    b.forEach(item => map.set(item.id, item));
-    return Array.from(map.values());
+  const generateInviteCode = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
   };
-  return {
-    expenses: mergeArr(local.expenses || [], remote.expenses || []),
-    incomes: mergeArr(local.incomes || [], remote.incomes || [])
+
+  const mapFirebaseError = (code) => {
+    const errors = {
+      "auth/user-not-found": "Korisnik nije pronađen",
+      "auth/wrong-password": "Lozinka nije ispravna",
+      "auth/email-already-in-use": "Email je već u upotrebi",
+      "auth/weak-password": "Lozinka mora imati najmanje 6 znakova",
+      "auth/invalid-email": "Email nije validan",
+      "auth/operation-not-allowed": "Operacija nije dozvoljena",
+      "auth/too-many-requests": "Previše pokušaja. Pokušajte kasnije",
+      "auth/user-disabled": "Korisnički račun je onemogućen",
+    };
+    return errors[code] || "Greška pri autentifikaciji";
   };
-};
 
-const exportData = (data) => {
-  const b = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(b);
-  a.download = "budzet-backup-" + new Date().toISOString().slice(0,10) + ".json"; a.click();
-};
-const importData = (file) => new Promise((res, rej) => {
-  const r = new FileReader();
-  r.onload = (e) => { try { const d = JSON.parse(e.target.result); (d.expenses && d.incomes) ? res(d) : rej(); } catch { rej(); } };
-  r.readAsText(file);
-});
+  // AuthScreen component
+  function AuthScreen() {
+    const [tab, setTab] = useState("login");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [resetSent, setResetSent] = useState(false);
 
-/* ──── CSS-only Charts ──── */
-function DonutChart({ data }) {
-  const total = data.reduce((s, d) => s + d.total, 0);
-  if (total === 0) return null;
-  let acc = 0;
-  const stops = data.map(d => {
-    const start = acc; acc += (d.total / total) * 360;
-    return d.color + " " + start + "deg " + acc + "deg";
-  }).join(", ");
-  return (
-    <div className="donut" style={{ background: "conic-gradient(" + stops + ")" }} />
-  );
-}
-
-function BarViz({ data, maxVal }) {
-  if (maxVal === 0) return null;
-  return (
-    <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 80, padding: "0 4px" }}>
-      {data.map((d, i) => (
-        <div key={i} style={{ flex: 1, textAlign: "center" }}>
-          <div style={{
-            height: Math.max(4, (d.amount / maxVal) * 60),
-            background: "linear-gradient(180deg, #E07A5F 0%, #E07A5F88 100%)",
-            borderRadius: "6px 6px 0 0",
-            transition: "height 0.4s ease",
-            marginBottom: 6,
-          }} />
-          <div style={{ fontSize: 10, color: "#8D8A85" }}>{d.name}</div>
-          {d.amount > 0 && <div style={{ fontSize: 10, fontWeight: 600, color: "#3D405B", marginTop: 2 }}>{fmt(d.amount)}</div>}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* ──── Main App ──── */
-function App() {
-  const now = new Date();
-  const [data, setData] = useState(loadLocal);
-  const [month, setMonth] = useState(now.getMonth());
-  const [year, setYear] = useState(now.getFullYear());
-  const [modal, setModal] = useState(null); // "expense" | "income" | "settings" | null
-  const [tab, setTab] = useState("dashboard");
-  const [anim, setAnim] = useState(false);
-  const [toast, setToast] = useState(null);
-  const [syncStatus, setSyncStatus] = useState("connecting"); // "connected" | "offline" | "connecting"
-  const fileRef = useRef(null);
-  const isRemoteUpdate = useRef(false);
-
-  useEffect(() => { setTimeout(() => setAnim(true), 50); }, []);
-
-  // Save to localStorage + Firestore on every change (unless it came from Firestore)
-  useEffect(() => {
-    saveLocal(data);
-    if (!isRemoteUpdate.current) {
-      saveToFirestore(data);
-    }
-    isRemoteUpdate.current = false;
-  }, [data]);
-
-  // Firestore real-time listener — syncs data across devices
-  useEffect(() => {
-    const ref = fsRef();
-    if (!ref) { setSyncStatus("offline"); return; }
-
-    const unsubscribe = ref.onSnapshot(
-      (doc) => {
-        if (doc.exists) {
-          const remote = doc.data();
-          const local = loadLocal();
-          const merged = mergeData(local, remote);
-          // Only update if data actually changed
-          const localStr = JSON.stringify({ e: local.expenses.length, i: local.incomes.length });
-          const mergedStr = JSON.stringify({ e: merged.expenses.length, i: merged.incomes.length });
-          if (localStr !== mergedStr || doc.metadata.hasPendingWrites === false) {
-            isRemoteUpdate.current = true;
-            setData(merged);
-          }
-        } else {
-          // First time: push local data to Firestore
-          const local = loadLocal();
-          if (local.expenses.length > 0 || local.incomes.length > 0) {
-            saveToFirestore(local);
-          }
-        }
-        setSyncStatus("connected");
-      },
-      (err) => {
-        console.log("Firestore listener error:", err);
-        setSyncStatus("offline");
+    const handleLogin = async (e) => {
+      e.preventDefault();
+      setError("");
+      setLoading(true);
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (err) {
+        setError(mapFirebaseError(err.code));
       }
-    );
-    return () => unsubscribe();
-  }, []);
+      setLoading(false);
+    };
 
-  const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2200); };
+    const handleSignup = async (e) => {
+      e.preventDefault();
+      setError("");
+      setLoading(true);
+      try {
+        const userCred = await auth.createUserWithEmailAndPassword(email, password);
+        const displayName = email.split("@")[0];
+        await userCred.user.updateProfile({ displayName });
+        await db.collection("users").doc(userCred.user.uid).set({
+          email: userCred.user.email,
+          displayName: displayName,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (err) {
+        setError(mapFirebaseError(err.code));
+      }
+      setLoading(false);
+    };
 
-  const cur = (arr) => arr.filter(e => { const d = new Date(e.date); return d.getMonth() === month && d.getFullYear() === year; });
-  const curExp = cur(data.expenses);
-  const curInc = cur(data.incomes);
-  const totExp = curExp.reduce((s, e) => s + e.amount, 0);
-  const totInc = curInc.reduce((s, e) => s + e.amount, 0);
-  const bal = totInc - totExp;
+    const handlePasswordReset = async () => {
+      if (!email) {
+        setError("Unesite email za resetiranje lozinke");
+        return;
+      }
+      setError("");
+      setLoading(true);
+      try {
+        await auth.sendPasswordResetEmail(email);
+        setResetSent(true);
+      } catch (err) {
+        setError(mapFirebaseError(err.code));
+      }
+      setLoading(false);
+    };
 
-  const byCat = CATEGORIES.map(c => ({ ...c, total: curExp.filter(e => e.category === c.id).reduce((s, e) => s + e.amount, 0) })).filter(c => c.total > 0);
-  const byMem = MEMBERS.map(m => ({ ...m, total: curExp.filter(e => e.member === m.id).reduce((s, e) => s + e.amount, 0) })).filter(m => m.total > 0);
+    const handleGoogleSignIn = async () => {
+      setError("");
+      setLoading(true);
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithRedirect(provider);
+      } catch (err) {
+        setError(mapFirebaseError(err.code));
+        setLoading(false);
+      }
+    };
 
-  const weekly = (() => {
-    const w = [{ name: "T1", amount: 0 }, { name: "T2", amount: 0 }, { name: "T3", amount: 0 }, { name: "T4", amount: 0 }];
-    curExp.forEach(e => { const d = new Date(e.date).getDate(); w[Math.min(3, Math.floor((d - 1) / 7))].amount += e.amount; });
-    return w;
-  })();
-  const maxWeekly = Math.max(...weekly.map(w => w.amount), 1);
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        padding: '20px',
+        background: 'linear-gradient(165deg, #FAF6F1 0%, #F0EBE3 50%, #E8E0D5 100%)'
+      }}>
+        <div style={cd_auth}>
+          <h1 style={{ marginBottom: '24px', textAlign: 'center', fontSize: '32px', color: '#3D405B', fontFamily: "'Fraunces', serif" }}>
+            Obiteljski Budžet
+          </h1>
 
-  const chgMonth = (dir) => {
-    let m = month + dir, y = year;
-    if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
-    setMonth(m); setYear(y);
-  };
+          <div style={tab_container}>
+            <button
+              style={{ ...tab_btn, ...(tab === "login" ? tab_btn_active : {}) }}
+              onClick={() => { setTab("login"); setError(""); setResetSent(false); }}
+            >
+              Prijava
+            </button>
+            <button
+              style={{ ...tab_btn, ...(tab === "signup" ? tab_btn_active : {}) }}
+              onClick={() => { setTab("signup"); setError(""); setResetSent(false); }}
+            >
+              Registracija
+            </button>
+          </div>
 
-  const addExp = (e) => { setData(p => ({ ...p, expenses: [...p.expenses, { ...e, id: Date.now() }] })); setModal(null); showToast("Rashod dodan ✓"); };
-  const addInc = (e) => { setData(p => ({ ...p, incomes: [...p.incomes, { ...e, id: Date.now() }] })); setModal(null); showToast("Prihod dodan ✓"); };
-  const delExp = (id) => { setData(p => ({ ...p, expenses: p.expenses.filter(e => e.id !== id) })); showToast("Obrisano"); };
-  const delInc = (id) => { setData(p => ({ ...p, incomes: p.incomes.filter(e => e.id !== id) })); showToast("Obrisano"); };
+          {tab === "login" && !resetSent && (
+            <form onSubmit={handleLogin}>
+              <input
+                type="email"
+                placeholder="Email"
+                style={{ ...inp, marginBottom: '12px' }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="Lozinka"
+                style={{ ...inp, marginBottom: '16px' }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button type="submit" style={{ ...sub_primary }} disabled={loading}>
+                {loading ? "Učitavanje..." : "Prijava"}
+              </button>
+              {error && <div style={error_text}>{error}</div>}
+              <button
+                type="button"
+                style={{ ...sb, marginTop: '12px' }}
+                onClick={() => setResetSent(true)}
+              >
+                Zaboravljena lozinka?
+              </button>
+            </form>
+          )}
 
-  const handleImport = async (e) => {
-    const f = e.target.files[0]; if (!f) return;
-    try {
-      const imp = await importData(f);
-      const eIds = new Set(data.expenses.map(x => x.id));
-      const iIds = new Set(data.incomes.map(x => x.id));
-      setData({ expenses: [...data.expenses, ...imp.expenses.filter(x => !eIds.has(x.id))], incomes: [...data.incomes, ...imp.incomes.filter(x => !iIds.has(x.id))] });
-      showToast("Importirano ✓");
-    } catch { showToast("Greška ✕"); }
-    e.target.value = "";
-  };
+          {tab === "signup" && (
+            <form onSubmit={handleSignup}>
+              <input
+                type="email"
+                placeholder="Email"
+                style={{ ...inp, marginBottom: '12px' }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="Lozinka (najmanje 6 znakova)"
+                style={{ ...inp, marginBottom: '16px' }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button type="submit" style={{ ...sub_primary }} disabled={loading}>
+                {loading ? "Učitavanje..." : "Registracija"}
+              </button>
+              {error && <div style={error_text}>{error}</div>}
+            </form>
+          )}
 
-  const reset = () => {
-    if (confirm("Obrisati SVE podatke?\nPreporučamo prvo backup.")) {
-      const empty = { expenses: [], incomes: [] };
-      setData(empty); localStorage.removeItem(DB);
-      saveToFirestore(empty);
-      showToast("Obrisano"); setModal(null);
-    }
-  };
+          {resetSent && (
+            <div>
+              <p style={{ marginBottom: '16px', fontSize: '14px', color: '#81B29A' }}>
+                Email za resetiranje lozinke je poslan. Proverite vašu poštu.
+              </p>
+              <button
+                style={{ ...sb }}
+                onClick={() => setResetSent(false)}
+              >
+                Povratak
+              </button>
+            </div>
+          )}
 
-  return (
-    <div style={{ minHeight: "100vh", opacity: anim ? 1 : 0, transition: "opacity 0.5s", paddingBottom: 100 }}>
+          <div style={{ margin: '20px 0', textAlign: 'center', fontSize: '13px', color: '#3D405B' }}>
+            ili
+          </div>
 
-      {toast && <div style={{ position: "fixed", top: 60, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "#3D405B", color: "#FAF6F1", padding: "10px 20px", borderRadius: 12, fontSize: 14, fontWeight: 500, boxShadow: "0 4px 20px rgba(0,0,0,0.15)", animation: "fadeIn 0.3s ease" }}>{toast}</div>}
-
-      {/* Header */}
-      <div style={{ padding: "28px 20px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 500, margin: "0 auto" }}>
-        <div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 24, margin: 0, letterSpacing: "-0.5px" }}>Obiteljski budžet</h1>
-          <p style={{ margin: "3px 0 0", fontSize: 12, color: "#8D8A85", fontWeight: 300 }}>
-            {syncStatus === "connected" ? "🟢 Synced" : syncStatus === "connecting" ? "🟡 Connecting..." : "🔴 Offline"}{" "}
-            <span style={{ opacity: 0.6 }}>✨</span>
-          </p>
+          <button
+            style={{ ...sub_primary, background: '#4285F4' }}
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+          >
+            Prijava sa Google
+          </button>
         </div>
-        <button onClick={() => setModal("settings")} style={{ background: "rgba(61,64,91,0.07)", border: "none", width: 38, height: 38, borderRadius: 12, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>⚙️</button>
       </div>
+    );
+  }
 
-      {/* Month nav */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18, padding: "0 20px 16px", maxWidth: 500, margin: "0 auto" }}>
-        <button onClick={() => chgMonth(-1)} style={nb}>◀</button>
-        <span style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 400, minWidth: 150, textAlign: "center" }}>{MONTHS[month]} {year}</span>
-        <button onClick={() => chgMonth(1)} style={nb}>▶</button>
+  // FamilySetup component
+  function FamilySetup({ user }) {
+    const [tab, setTab] = useState("create");
+    const [familyName, setFamilyName] = useState("");
+    const [inviteCode, setInviteCode] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState("");
+
+    useEffect(() => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("inviteCode");
+      if (code) {
+        setInviteCode(code);
+        setTab("join");
+      }
+    }, []);
+
+    const handleCreateFamily = async (e) => {
+      e.preventDefault();
+      if (!familyName.trim()) {
+        setError("Unesite naziv obitelji");
+        return;
+      }
+      setError("");
+      setLoading(true);
+
+      try {
+        const familyId = db.collection("families").doc().id;
+
+        // Check if family/tadic exists for migration
+        const tadicDoc = await db.collection("familyData").doc("tadic").get();
+        const familyDataToCopy = tadicDoc.exists ? tadicDoc.data() : { expenses: [], incomes: [] };
+
+        const displayName = user.displayName || user.email.split("@")[0];
+
+        await db.collection("families").doc(familyId).set({
+          name: familyName,
+          ownerId: user.uid,
+          members: [{
+            uid: user.uid,
+            name: displayName,
+            icon: displayName[0].toUpperCase(),
+            color: MEMBER_COLORS[0]
+          }],
+          pendingInvites: [],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        await db.collection("familyData").doc(familyId).set({
+          expenses: familyDataToCopy.expenses || [],
+          incomes: familyDataToCopy.incomes || [],
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        await db.collection("users").doc(user.uid).update({
+          familyId: familyId
+        });
+
+        setSuccess("Obitelj je kreirana!");
+      } catch (err) {
+        setError("Greška pri kreiranju obitelji: " + err.message);
+      }
+      setLoading(false);
+    };
+
+    const handleJoinFamily = async (e) => {
+      e.preventDefault();
+      if (!inviteCode.trim()) {
+        setError("Unesite pozivnicu");
+        return;
+      }
+      setError("");
+      setLoading(true);
+
+      try {
+        // Find family with this invite code
+        const famSnapshot = await db.collection("families")
+          .where("pendingInvites", "array-contains", { email: user.email, code: inviteCode.toUpperCase() })
+          .limit(1)
+          .get();
+
+        if (famSnapshot.empty) {
+          setError("Pozivnica nije pronađena ili nije važeća");
+          setLoading(false);
+          return;
+        }
+
+        const familyDoc = famSnapshot.docs[0];
+        const familyId = familyDoc.id;
+        const familyData = familyDoc.data();
+
+        const displayName = user.displayName || user.email.split("@")[0];
+
+        // Add user as member
+        const newMembers = [
+          ...familyData.members,
+          {
+            uid: user.uid,
+            name: displayName,
+            icon: displayName[0].toUpperCase(),
+            color: MEMBER_COLORS[familyData.members.length % MEMBER_COLORS.length]
+          }
+        ];
+
+        // Remove used invite code
+        const updatedInvites = familyData.pendingInvites.filter(
+          inv => !(inv.email === user.email && inv.code === inviteCode.toUpperCase())
+        );
+
+        await familyDoc.ref.update({
+          members: newMembers,
+          pendingInvites: updatedInvites
+        });
+
+        await db.collection("users").doc(user.uid).update({
+          familyId: familyId
+        });
+
+        setSuccess("Pridružili ste se obitelji!");
+      } catch (err) {
+        setError("Greška pri pridruživanju obitelji: " + err.message);
+      }
+      setLoading(false);
+    };
+
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        padding: '20px',
+        background: 'linear-gradient(165deg, #FAF6F1 0%, #F0EBE3 50%, #E8E0D5 100%)'
+      }}>
+        <div style={cd_auth}>
+          <h1 style={{ marginBottom: '24px', textAlign: 'center', fontSize: '28px', color: '#3D405B', fontFamily: "'Fraunces', serif" }}>
+            Obitelj
+          </h1>
+
+          <div style={tab_container}>
+            <button
+              style={{ ...tab_btn, ...(tab === "create" ? tab_btn_active : {}) }}
+              onClick={() => { setTab("create"); setError(""); setSuccess(""); }}
+            >
+              Kreiraj
+            </button>
+            <button
+              style={{ ...tab_btn, ...(tab === "join" ? tab_btn_active : {}) }}
+              onClick={() => { setTab("join"); setError(""); setSuccess(""); }}
+            >
+              Pridruži se
+            </button>
+          </div>
+
+          {tab === "create" && (
+            <form onSubmit={handleCreateFamily}>
+              <input
+                type="text"
+                placeholder="Naziv obitelji"
+                style={{ ...inp, marginBottom: '16px' }}
+                value={familyName}
+                onChange={(e) => setFamilyName(e.target.value)}
+              />
+              <button type="submit" style={{ ...sub_primary }} disabled={loading}>
+                {loading ? "Kreiranja..." : "Kreiraj obitelj"}
+              </button>
+              {error && <div style={error_text}>{error}</div>}
+              {success && <div style={success_text}>{success}</div>}
+            </form>
+          )}
+
+          {tab === "join" && (
+            <form onSubmit={handleJoinFamily}>
+              <input
+                type="text"
+                placeholder="Pozivnicu (kod)"
+                style={{ ...inp, marginBottom: '16px' }}
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+              />
+              <button type="submit" style={{ ...sub_primary }} disabled={loading}>
+                {loading ? "Pridruživanja..." : "Pridruži se obitelji"}
+              </button>
+              {error && <div style={error_text}>{error}</div>}
+              {success && <div style={success_text}>{success}</div>}
+            </form>
+          )}
+        </div>
       </div>
+    );
+  }
 
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: 6, padding: "0 20px 14px", maxWidth: 500, margin: "0 auto" }}>
-        {[["dashboard","📊 Pregled"],["list","📋 Popis"]].map(([k,l]) => (
-          <button key={k} onClick={() => setTab(k)} style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", fontSize: 13, fontWeight: 500, background: tab === k ? "#3D405B" : "rgba(61,64,91,0.07)", color: tab === k ? "#FAF6F1" : "#3D405B", transition: "all 0.2s" }}>{l}</button>
+  // Loading screen
+  function LoadingScreen() {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  // Toast notification
+  function Toast({ message, type = "success", onClose }) {
+    useEffect(() => {
+      const timer = setTimeout(onClose, 2200);
+      return () => clearTimeout(timer);
+    }, [onClose]);
+
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 60,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: type === "success" ? "#3D405B" : "#E07A5F",
+        color: type === "success" ? "#FAF6F1" : "#fff",
+        padding: '10px 20px',
+        borderRadius: 12,
+        zIndex: 200,
+        fontSize: 14,
+        fontWeight: 500,
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        animation: 'fadeIn 0.3s ease'
+      }}>
+        {message}
+      </div>
+    );
+  }
+
+  // DonutChart component
+  function DonutChart({ data }) {
+    const total = data.reduce((s, d) => s + d.total, 0);
+    if (total === 0) return null;
+    let acc = 0;
+    const stops = data.map(d => {
+      const start = acc; acc += (d.total / total) * 360;
+      return d.color + " " + start + "deg " + acc + "deg";
+    }).join(", ");
+    return (
+      <div className="donut" style={{ background: "conic-gradient(" + stops + ")" }} />
+    );
+  }
+
+  // BarViz component
+  function BarViz({ data, maxVal }) {
+    if (maxVal === 0) return null;
+    return (
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 80, padding: "0 4px" }}>
+        {data.map((d, i) => (
+          <div key={i} style={{ flex: 1, textAlign: "center" }}>
+            <div style={{
+              height: Math.max(4, (d.amount / maxVal) * 60),
+              background: "linear-gradient(180deg, #E07A5F 0%, #E07A5F88 100%)",
+              borderRadius: "6px 6px 0 0",
+              transition: "height 0.4s ease",
+              marginBottom: 6,
+            }} />
+            <div style={{ fontSize: 10, color: "#8D8A85" }}>{d.name}</div>
+            {d.amount > 0 && <div style={{ fontSize: 10, fontWeight: 600, color: "#3D405B", marginTop: 2 }}>{fmt(d.amount)}</div>}
+          </div>
         ))}
       </div>
+    );
+  }
 
-      <div style={{ maxWidth: 500, margin: "0 auto", padding: "0 20px" }}>
-        {tab === "dashboard" ? (<>
-          {/* Summary cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 18 }}>
-            <SumCard label="Prihodi" val={totInc} color="#81B29A" />
-            <SumCard label="Rashodi" val={totExp} color="#E07A5F" />
-            <SumCard label="Bilanca" val={bal} color={bal >= 0 ? "#81B29A" : "#E07A5F"} bold />
+  // ExpenseModal component
+  function ExpenseModal({ onAdd, onClose, month, year, members }) {
+    const [amt, setAmt] = useState("");
+    const [cat, setCat] = useState("food");
+    const [mem, setMem] = useState("shared");
+    const [note, setNote] = useState("");
+    const [day, setDay] = useState(String(new Date().getDate()));
+
+    const handleSubmit = () => {
+      const a = parseFloat(amt);
+      if (!a || a <= 0) return;
+      const d = Math.max(1, Math.min(31, parseInt(day) || 1));
+      onAdd({
+        amount: a,
+        category: cat,
+        member: mem,
+        note: note,
+        date: new Date(year, month, d).toISOString()
+      });
+    };
+
+    return (
+      <Modal onClose={onClose} title="Novi rashod" color="#E07A5F">
+        <Field label="Iznos (€)"><input type="number" value={amt} onChange={e => setAmt(e.target.value)} placeholder="0" style={inp} autoFocus inputMode="decimal" /></Field>
+        <Field label="Dan u mjesecu"><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inp, width: 80 }} inputMode="numeric" /></Field>
+        <Field label="Kategorija">
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {EXPENSE_CATEGORIES.map(c => <Chip key={c.id} active={cat === c.id} color={c.color} onClick={() => setCat(c.id)}>{c.icon} {c.label}</Chip>)}
+          </div>
+        </Field>
+        <Field label="Tko?">
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <Chip active={mem === "shared"} color="#81B29A" onClick={() => setMem("shared")}>📦 Zajedničko</Chip>
+            {members.filter(m => m.id !== "shared").map(m => <Chip key={m.id} active={mem === m.id} color={m.color} onClick={() => setMem(m.id)}>{m.icon} {m.label}</Chip>)}
+          </div>
+        </Field>
+        <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Konzum" style={inp} /></Field>
+        <button onClick={handleSubmit} style={{ ...sub, background: "#E07A5F" }}>Dodaj rashod</button>
+      </Modal>
+    );
+  }
+
+  // IncomeModal component
+  function IncomeModal({ onAdd, onClose, month, year, members }) {
+    const [amt, setAmt] = useState("");
+    const [cat, setCat] = useState("salary");
+    const [mem, setMem] = useState("shared");
+    const [note, setNote] = useState("");
+    const [day, setDay] = useState(String(new Date().getDate()));
+
+    const handleSubmit = () => {
+      const a = parseFloat(amt);
+      if (!a || a <= 0) return;
+      const d = Math.max(1, Math.min(31, parseInt(day) || 1));
+      onAdd({
+        amount: a,
+        category: cat,
+        member: mem,
+        note: note,
+        date: new Date(year, month, d).toISOString()
+      });
+    };
+
+    return (
+      <Modal onClose={onClose} title="Novi prihod" color="#81B29A">
+        <Field label="Iznos (€)"><input type="number" value={amt} onChange={e => setAmt(e.target.value)} placeholder="0" style={inp} autoFocus inputMode="decimal" /></Field>
+        <Field label="Dan u mjesecu"><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inp, width: 80 }} inputMode="numeric" /></Field>
+        <Field label="Vrsta prihoda">
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {INCOME_CATEGORIES.map(c => <Chip key={c.id} active={cat === c.id} color={c.color} onClick={() => setCat(c.id)}>{c.icon} {c.label}</Chip>)}
+          </div>
+        </Field>
+        <Field label="Tko?">
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <Chip active={mem === "shared"} color="#81B29A" onClick={() => setMem("shared")}>📦 Zajedničko</Chip>
+            {members.filter(m => m.id !== "shared").map(m => <Chip key={m.id} active={mem === m.id} color={m.color} onClick={() => setMem(m.id)}>{m.icon} {m.label}</Chip>)}
+          </div>
+        </Field>
+        <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Plaća ožujak" style={inp} /></Field>
+        <button onClick={handleSubmit} style={{ ...sub, background: "#81B29A" }}>Dodaj prihod</button>
+      </Modal>
+    );
+  }
+
+  // SettingsModal component
+  function SettingsModal({ onClose, user, familyName, members, onInvite, onLogout, onReset, onExport, onImportClick, data, isOwner }) {
+    return (
+      <Modal onClose={onClose} title="Postavke" color="#3D405B">
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <h4 style={{ fontSize: 13, color: "#8D8A85", marginBottom: 4, marginTop: 12, fontWeight: 600 }}>Korisnik</h4>
+          <p style={{ fontSize: 13, color: "#3D405B", marginBottom: 4 }}><strong>Email:</strong> {user.email}</p>
+
+          <h4 style={{ fontSize: 13, color: "#8D8A85", marginBottom: 4, marginTop: 12, fontWeight: 600 }}>Obitelj</h4>
+          <p style={{ fontSize: 13, color: "#3D405B", marginBottom: 4 }}><strong>Naziv:</strong> {familyName}</p>
+          <p style={{ fontSize: 13, color: "#8D8A85", marginBottom: 8 }}>Članovi:</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+            {members.map(m => (
+              <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#3D405B" }}>
+                <div style={{ width: 24, height: 24, borderRadius: "50%", background: m.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 11 }}>{m.icon[0] || m.label[0]}</div>
+                {m.label}
+              </div>
+            ))}
           </div>
 
-          {/* Category donut */}
-          {byCat.length > 0 && (
-            <div style={cd}>
-              <h3 style={ct}>Po kategorijama</h3>
-              <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                <DonutChart data={byCat} />
-                <div style={{ flex: 1 }}>
-                  {byCat.map(c => (
-                    <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
-                      <div style={{ width: 10, height: 10, borderRadius: "50%", background: c.color, flexShrink: 0 }} />
-                      <span style={{ fontSize: 12, flex: 1 }}>{c.icon} {c.label}</span>
-                      <span style={{ fontSize: 12, fontWeight: 600 }}>{fmt(c.total)}</span>
-                    </div>
-                  ))}
+          {isOwner && (
+            <button onClick={onInvite} style={sb}>👥 Pozovi člana</button>
+          )}
+
+          <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
+
+          <p style={{ fontSize: 13, color: "#8D8A85", marginBottom: 4 }}>Ukupno zapisa: <strong style={{ color: "#3D405B" }}>{data.expenses.length + data.incomes.length}</strong></p>
+          <button onClick={onExport} style={sb}>📥 Preuzmi backup (JSON)</button>
+          <button onClick={onImportClick} style={sb}>📤 Importiraj backup</button>
+
+          <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
+
+          <button onClick={onReset} style={{ ...sb, color: "#E07A5F" }}>🗑️ Obriši sve podatke</button>
+
+          <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
+
+          <button onClick={onLogout} style={{ ...sb, color: "#E07A5F" }}>🚪 Odjavi se</button>
+
+          <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
+
+          <p style={{ fontSize: 11, color: "#BDB8B0", lineHeight: 1.5 }}>Podatci se sinkroniziraju preko oblaka (Firebase) i čuvaju lokalno kao backup. Oba mobitela vide iste podatke u realnom vremenu! 🔄</p>
+        </div>
+      </Modal>
+    );
+  }
+
+  // Modal component
+  function Modal({ onClose, title, color, children }) {
+    const [vis, setVis] = useState(false);
+    useEffect(() => { requestAnimationFrame(() => requestAnimationFrame(() => setVis(true))); }, []);
+    const close = () => { setVis(false); setTimeout(onClose, 250); };
+    return (
+      <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(61,64,91,0.3)", WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 100, opacity: vis ? 1 : 0, transition: "opacity 0.2s" }}>
+        <div onClick={e => e.stopPropagation()} style={{ background: "#FAF6F1", borderRadius: "24px 24px 0 0", padding: "28px 22px 32px", paddingBottom: "calc(32px + env(safe-area-inset-bottom))", width: "100%", maxWidth: 500, maxHeight: "85vh", overflowY: "auto", transform: vis ? "translateY(0)" : "translateY(100%)", transition: "transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, margin: 0, color: color }}>{title}</h2>
+            <button onClick={close} style={{ background: "rgba(61,64,91,0.08)", border: "none", width: 32, height: 32, borderRadius: 10, fontSize: 16, color: "#8D8A85", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+          </div>
+          {children}
+        </div>
+      </div>
+    );
+  }
+
+  // Field component
+  function Field({ label, children }) {
+    return (<div style={{ marginBottom: 16 }}><label style={{ display: "block", fontSize: 11, color: "#8D8A85", marginBottom: 6, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</label>{children}</div>);
+  }
+
+  // Chip component
+  function Chip({ active, color, onClick, children }) {
+    return (<button onClick={onClick} style={{ padding: "8px 12px", borderRadius: 10, border: "none", fontSize: 12, background: active ? color : "rgba(61,64,91,0.07)", color: active ? "#fff" : "#3D405B", transition: "all 0.2s" }}>{children}</button>);
+  }
+
+  // SumCard component
+  function SumCard({ label, val, color, bold }) {
+    return (
+      <div style={{ background: "rgba(255,255,255,0.65)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", borderRadius: 16, padding: "14px 12px", textAlign: "center", boxShadow: "0 2px 12px rgba(61,64,91,0.04)", border: "1px solid rgba(255,255,255,0.5)" }}>
+        <div style={{ fontSize: 10, color: "#8D8A85", marginBottom: 5, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</div>
+        <div style={{ fontSize: bold ? 17 : 15, fontWeight: 700, color: color, fontFamily: "'Fraunces', serif" }}>{fmt(val)}</div>
+      </div>
+    );
+  }
+
+  // Empty component
+  function Empty({ icon, text }) {
+    return (<div style={{ textAlign: "center", padding: "48px 20px", color: "#BDB8B0" }}><div style={{ fontSize: 48, marginBottom: 12 }}>{icon}</div><p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.6 }}>{text}</p></div>);
+  }
+
+  // Main App component
+  function App({ user, familyId, familyName, members }) {
+    const now = new Date();
+    const [data, setData] = useState({ expenses: [], incomes: [] });
+    const [month, setMonth] = useState(now.getMonth());
+    const [year, setYear] = useState(now.getFullYear());
+    const [modal, setModal] = useState(null);
+    const [tab, setTab] = useState("dashboard");
+    const [anim, setAnim] = useState(false);
+    const [toast, setToast] = useState(null);
+    const [syncStatus, setSyncStatus] = useState("connecting");
+    const fileRef = useRef(null);
+    const isRemoteUpdate = useRef(false);
+
+    useEffect(() => { setTimeout(() => setAnim(true), 50); }, []);
+
+    // Subscribe to Firestore
+    useEffect(() => {
+      if (!familyId) return;
+
+      const unsubscribe = db.collection("familyData").doc(familyId).onSnapshot(
+        (doc) => {
+          if (doc.exists) {
+            const remote = doc.data();
+            isRemoteUpdate.current = true;
+            setData(remote);
+            setSyncStatus("connected");
+          } else {
+            setSyncStatus("connected");
+          }
+        },
+        (err) => {
+          console.log("Firestore listener error:", err);
+          setSyncStatus("offline");
+        }
+      );
+
+      return () => unsubscribe();
+    }, [familyId]);
+
+    // Save to Firestore on every change (unless it came from Firestore)
+    useEffect(() => {
+      if (!isRemoteUpdate.current && familyId) {
+        db.collection("familyData").doc(familyId).set({
+          expenses: data.expenses,
+          incomes: data.incomes,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.log("Firestore save error:", err));
+      }
+      isRemoteUpdate.current = false;
+    }, [data, familyId]);
+
+    const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2200); };
+
+    const cur = (arr) => arr.filter(e => { const d = new Date(e.date); return d.getMonth() === month && d.getFullYear() === year; });
+    const curExp = cur(data.expenses || []);
+    const curInc = cur(data.incomes || []);
+    const totExp = curExp.reduce((s, e) => s + e.amount, 0);
+    const totInc = curInc.reduce((s, e) => s + e.amount, 0);
+    const bal = totInc - totExp;
+
+    const byCat = EXPENSE_CATEGORIES.map(c => ({ ...c, total: curExp.filter(e => e.category === c.id).reduce((s, e) => s + e.amount, 0) })).filter(c => c.total > 0);
+    const byMem = members.map(m => ({ ...m, total: curExp.filter(e => e.member === m.id).reduce((s, e) => s + e.amount, 0) })).filter(m => m.total > 0);
+
+    const weekly = (() => {
+      const w = [{ name: "T1", amount: 0 }, { name: "T2", amount: 0 }, { name: "T3", amount: 0 }, { name: "T4", amount: 0 }];
+      curExp.forEach(e => { const d = new Date(e.date).getDate(); w[Math.min(3, Math.floor((d - 1) / 7))].amount += e.amount; });
+      return w;
+    })();
+    const maxWeekly = Math.max(...weekly.map(w => w.amount), 1);
+
+    const chgMonth = (dir) => {
+      let m = month + dir, y = year;
+      if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
+      setMonth(m); setYear(y);
+    };
+
+    const addExp = (e) => { setData(p => ({ ...p, expenses: [...p.expenses, { ...e, id: Date.now() }] })); setModal(null); showToast("Rashod dodan ✓"); };
+    const addInc = (e) => { setData(p => ({ ...p, incomes: [...p.incomes, { ...e, id: Date.now() }] })); setModal(null); showToast("Prihod dodan ✓"); };
+    const delExp = (id) => { setData(p => ({ ...p, expenses: p.expenses.filter(e => e.id !== id) })); showToast("Obrisano"); };
+    const delInc = (id) => { setData(p => ({ ...p, incomes: p.incomes.filter(e => e.id !== id) })); showToast("Obrisano"); };
+
+    const handleImport = async (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      try {
+        const r = new FileReader();
+        r.onload = (event) => {
+          try {
+            const imp = JSON.parse(event.target.result);
+            const eIds = new Set(data.expenses.map(x => x.id));
+            const iIds = new Set(data.incomes.map(x => x.id));
+            setData({
+              expenses: [...data.expenses, ...imp.expenses.filter(x => !eIds.has(x.id))],
+              incomes: [...data.incomes, ...imp.incomes.filter(x => !iIds.has(x.id))]
+            });
+            showToast("Importirano ✓");
+          } catch { showToast("Greška ✕"); }
+        };
+        r.readAsText(f);
+      } catch { showToast("Greška ✕"); }
+      e.target.value = "";
+    };
+
+    const handleExport = () => {
+      const b = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(b);
+      a.download = "budzet-backup-" + new Date().toISOString().slice(0,10) + ".json"; a.click();
+      showToast("Backup preuzet ✓");
+    };
+
+    const reset = () => {
+      if (confirm("Obrisati SVE podatke?\nPreporučamo prvo backup.")) {
+        const empty = { expenses: [], incomes: [] };
+        setData(empty);
+        showToast("Obrisano"); setModal(null);
+      }
+    };
+
+    const handleInvite = async () => {
+      const email = prompt("Email člana za pozivanje:");
+      if (!email) return;
+      try {
+        const code = generateInviteCode();
+        const familyRef = db.collection("families").doc(familyId);
+        const familyDoc = await familyRef.get();
+        const pendingInvites = familyDoc.data()?.pendingInvites || [];
+
+        await familyRef.update({
+          pendingInvites: [...pendingInvites, { email, code }]
+        });
+
+        const shareUrl = `https://taddeio.github.io/Bud-Tracker/?inviteCode=${code}`;
+        const shareText = `Pridruži se mojoj obitelji na Obiteljski Budžet! Koristi kod: ${code} na ${shareUrl}`;
+
+        if (navigator.share) {
+          await navigator.share({ title: 'Obiteljski Budžet', text: shareText, url: shareUrl });
+        } else {
+          navigator.clipboard.writeText(shareText);
+          showToast("Kod je kopiran u međuspremnik");
+        }
+      } catch (err) {
+        console.error("Greška pri pozivanju:", err);
+        showToast("Greška pri pozivanju");
+      }
+    };
+
+    const handleLogout = async () => {
+      try {
+        await auth.signOut();
+      } catch (err) {
+        console.error("Greška pri odjavi:", err);
+      }
+    };
+
+    const isOwner = user.uid === members[0]?.uid;
+
+    return (
+      <div style={{ minHeight: "100vh", opacity: anim ? 1 : 0, transition: "opacity 0.5s", paddingBottom: 100 }}>
+
+        {toast && <Toast message={toast.type === "error" ? toast.message : toast} type={typeof toast === "string" ? "success" : toast.type} onClose={() => setToast(null)} />}
+
+        {/* Header */}
+        <div style={{ padding: "28px 20px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 500, margin: "0 auto" }}>
+          <div>
+            <h1 style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 24, margin: 0, letterSpacing: "-0.5px" }}>Obiteljski budžet</h1>
+            <p style={{ margin: "3px 0 0", fontSize: 12, color: "#8D8A85", fontWeight: 300 }}>
+              {syncStatus === "connected" ? "🟢 Synced" : syncStatus === "connecting" ? "🟡 Connecting..." : "🔴 Offline"}{" "}
+              <span style={{ opacity: 0.6 }}>✨</span>
+            </p>
+          </div>
+          <button onClick={() => setModal("settings")} style={{ background: "rgba(61,64,91,0.07)", border: "none", width: 38, height: 38, borderRadius: 12, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>⚙️</button>
+        </div>
+
+        {/* Month nav */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18, padding: "0 20px 16px", maxWidth: 500, margin: "0 auto" }}>
+          <button onClick={() => chgMonth(-1)} style={nb}>◀</button>
+          <span style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 400, minWidth: 150, textAlign: "center" }}>{MONTHS[month]} {year}</span>
+          <button onClick={() => chgMonth(1)} style={nb}>▶</button>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: 6, padding: "0 20px 14px", maxWidth: 500, margin: "0 auto" }}>
+          {[["dashboard","📊 Pregled"],["list","📋 Popis"]].map(([k,l]) => (
+            <button key={k} onClick={() => setTab(k)} style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", fontSize: 13, fontWeight: 500, background: tab === k ? "#3D405B" : "rgba(61,64,91,0.07)", color: tab === k ? "#FAF6F1" : "#3D405B", transition: "all 0.2s" }}>{l}</button>
+          ))}
+        </div>
+
+        <div style={{ maxWidth: 500, margin: "0 auto", padding: "0 20px" }}>
+          {tab === "dashboard" ? (<>
+            {/* Summary cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 18 }}>
+              <SumCard label="Prihodi" val={totInc} color="#81B29A" />
+              <SumCard label="Rashodi" val={totExp} color="#E07A5F" />
+              <SumCard label="Bilanca" val={bal} color={bal >= 0 ? "#81B29A" : "#E07A5F"} bold />
+            </div>
+
+            {/* Category donut */}
+            {byCat.length > 0 && (
+              <div style={cd}>
+                <h3 style={ct}>Po kategorijama</h3>
+                <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+                  <DonutChart data={byCat} />
+                  <div style={{ flex: 1 }}>
+                    {byCat.map(c => (
+                      <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+                        <div style={{ width: 10, height: 10, borderRadius: "50%", background: c.color, flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, flex: 1 }}>{c.icon} {c.label}</span>
+                        <span style={{ fontSize: 12, fontWeight: 600 }}>{fmt(c.total)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Member bars */}
-          {byMem.length > 0 && (
-            <div style={cd}>
-              <h3 style={ct}>Po članovima</h3>
-              {byMem.map(m => {
-                const pct = totExp > 0 ? (m.total / totExp * 100) : 0;
-                return (
-                  <div key={m.id} style={{ marginBottom: 10 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}><span>{m.icon} {m.label}</span><span style={{ fontWeight: 600 }}>{fmt(m.total)}</span></div>
-                    <div style={{ height: 8, background: "rgba(61,64,91,0.08)", borderRadius: 4, overflow: "hidden" }}><div style={{ height: "100%", width: pct + "%", background: m.color, borderRadius: 4, transition: "width 0.5s" }} /></div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Weekly trend bars */}
-          {curExp.length > 0 && (
-            <div style={cd}>
-              <h3 style={ct}>Tjedni trend rashoda</h3>
-              <BarViz data={weekly} maxVal={maxWeekly} />
-            </div>
-          )}
-
-          {curExp.length === 0 && curInc.length === 0 && <Empty icon="📝" text={"Još nema zapisa za " + MONTHS[month].toLowerCase() + ". Dodaj prvi unos!"} />}
-        </>) : (<>
-          {/* LIST TAB */}
-          {curInc.length > 0 && (
-            <div style={cd}><h3 style={ct}>Prihodi</h3>
-              {curInc.sort((a,b) => new Date(b.date) - new Date(a.date)).map(inc => {
-                const icat = INC_CATEGORIES.find(c => c.id === inc.category);
-                return (
-                  <div key={inc.id} style={li}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: icat ? icat.color + "18" : "#81B29A18", fontSize: 18, flexShrink: 0 }}>{icat ? icat.icon : "💰"}</div>
-                    <div style={{ flex: 1, marginLeft: 10 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500 }}>{inc.note || (icat ? icat.label : "Prihod")}</div>
-                      <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(inc.date).toLocaleDateString("hr-HR")}{inc.member ? " · " + (MEMBERS.find(m => m.id === inc.member) || {}).label : ""}</div>
+            {/* Member bars */}
+            {byMem.length > 0 && (
+              <div style={cd}>
+                <h3 style={ct}>Po članovima</h3>
+                {byMem.map(m => {
+                  const pct = totExp > 0 ? (m.total / totExp * 100) : 0;
+                  return (
+                    <div key={m.id} style={{ marginBottom: 10 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}><span>{m.icon} {m.label}</span><span style={{ fontWeight: 600 }}>{fmt(m.total)}</span></div>
+                      <div style={{ height: 8, background: "rgba(61,64,91,0.08)", borderRadius: 4, overflow: "hidden" }}><div style={{ height: "100%", width: pct + "%", background: m.color, borderRadius: 4, transition: "width 0.5s" }} /></div>
                     </div>
-                    <span style={{ fontWeight: 600, color: "#81B29A", fontSize: 14 }}>+{fmt(inc.amount)}</span>
-                    <button onClick={() => delInc(inc.id)} style={db}>✕</button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-          {curExp.length > 0 && (
-            <div style={cd}><h3 style={ct}>Rashodi</h3>
-              {curExp.sort((a,b) => new Date(b.date) - new Date(a.date)).map(exp => {
-                const cat = CATEGORIES.find(c => c.id === exp.category);
-                return (
-                  <div key={exp.id} style={li}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: cat ? cat.color + "18" : "#eee", fontSize: 18, flexShrink: 0 }}>{cat ? cat.icon : "💰"}</div>
-                    <div style={{ flex: 1, marginLeft: 10 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500 }}>{exp.note || (cat ? cat.label : "Trošak")}</div>
-                      <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(exp.date).toLocaleDateString("hr-HR")}{exp.member ? " · " + (MEMBERS.find(m => m.id === exp.member) || {}).label : ""}</div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Weekly trend bars */}
+            {curExp.length > 0 && (
+              <div style={cd}>
+                <h3 style={ct}>Tjedni trend rashoda</h3>
+                <BarViz data={weekly} maxVal={maxWeekly} />
+              </div>
+            )}
+
+            {curExp.length === 0 && curInc.length === 0 && <Empty icon="📝" text={"Još nema zapisa za " + MONTHS[month].toLowerCase() + ". Dodaj prvi unos!"} />}
+          </>) : (<>
+            {/* LIST TAB */}
+            {curInc.length > 0 && (
+              <div style={cd}><h3 style={ct}>Prihodi</h3>
+                {curInc.sort((a,b) => new Date(b.date) - new Date(a.date)).map(inc => {
+                  const icat = INCOME_CATEGORIES.find(c => c.id === inc.category);
+                  const mem = members.find(m => m.id === inc.member);
+                  return (
+                    <div key={inc.id} style={li}>
+                      <div style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: icat ? icat.color + "18" : "#81B29A18", fontSize: 18, flexShrink: 0 }}>{icat ? icat.icon : "💰"}</div>
+                      <div style={{ flex: 1, marginLeft: 10 }}>
+                        <div style={{ fontSize: 14, fontWeight: 500 }}>{inc.note || (icat ? icat.label : "Prihod")}</div>
+                        <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(inc.date).toLocaleDateString("hr-HR")}{mem ? " · " + mem.label : ""}</div>
+                      </div>
+                      <span style={{ fontWeight: 600, color: "#81B29A", fontSize: 14 }}>+{fmt(inc.amount)}</span>
+                      <button onClick={() => delInc(inc.id)} style={db}>✕</button>
                     </div>
-                    <span style={{ fontWeight: 600, color: "#E07A5F", fontSize: 14 }}>-{fmt(exp.amount)}</span>
-                    <button onClick={() => delExp(exp.id)} style={db}>✕</button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-          {curExp.length === 0 && curInc.length === 0 && <Empty icon="📋" text="Nema zapisa za ovaj mjesec." />}
-        </>)}
+                  );
+                })}
+              </div>
+            )}
+            {curExp.length > 0 && (
+              <div style={cd}><h3 style={ct}>Rashodi</h3>
+                {curExp.sort((a,b) => new Date(b.date) - new Date(a.date)).map(exp => {
+                  const cat = EXPENSE_CATEGORIES.find(c => c.id === exp.category);
+                  const mem = members.find(m => m.id === exp.member);
+                  return (
+                    <div key={exp.id} style={li}>
+                      <div style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: cat ? cat.color + "18" : "#eee", fontSize: 18, flexShrink: 0 }}>{cat ? cat.icon : "💰"}</div>
+                      <div style={{ flex: 1, marginLeft: 10 }}>
+                        <div style={{ fontSize: 14, fontWeight: 500 }}>{exp.note || (cat ? cat.label : "Trošak")}</div>
+                        <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(exp.date).toLocaleDateString("hr-HR")}{mem ? " · " + mem.label : ""}</div>
+                      </div>
+                      <span style={{ fontWeight: 600, color: "#E07A5F", fontSize: 14 }}>-{fmt(exp.amount)}</span>
+                      <button onClick={() => delExp(exp.id)} style={db}>✕</button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {curExp.length === 0 && curInc.length === 0 && <Empty icon="📋" text="Nema zapisa za ovaj mjesec." />}
+          </>)}
+        </div>
+
+        {/* FABs */}
+        <div style={{ position: "fixed", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", display: "flex", gap: 10, zIndex: 50 }}>
+          <button onClick={() => setModal("income")} style={{ ...fb, background: "#81B29A" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Prihod</span></button>
+          <button onClick={() => setModal("expense")} style={{ ...fb, background: "#E07A5F" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Rashod</span></button>
+        </div>
+
+        {/* Modals */}
+        {modal === "expense" && <ExpenseModal onAdd={addExp} onClose={() => setModal(null)} month={month} year={year} members={members} />}
+        {modal === "income" && <IncomeModal onAdd={addInc} onClose={() => setModal(null)} month={month} year={year} members={members} />}
+        {modal === "settings" && (
+          <SettingsModal
+            onClose={() => setModal(null)}
+            user={user}
+            familyName={familyName}
+            members={members}
+            onInvite={handleInvite}
+            onLogout={handleLogout}
+            onReset={reset}
+            onExport={handleExport}
+            onImportClick={() => fileRef.current && fileRef.current.click()}
+            data={data}
+            isOwner={isOwner}
+          />
+        )}
+        <input type="file" ref={fileRef} accept=".json" onChange={handleImport} style={{ display: "none" }} />
       </div>
+    );
+  }
 
-      {/* FABs */}
-      <div style={{ position: "fixed", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", display: "flex", gap: 10, zIndex: 50 }}>
-        <button onClick={() => setModal("income")} style={{ ...fb, background: "#81B29A" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Prihod</span></button>
-        <button onClick={() => setModal("expense")} style={{ ...fb, background: "#E07A5F" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Rashod</span></button>
-      </div>
+  // AppRoot component - handles auth state
+  function AppRoot() {
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [userDoc, setUserDoc] = useState(null);
+    const [familyDoc, setFamilyDoc] = useState(null);
 
-      {/* Modals */}
-      {modal === "expense" && <ExpenseModal onAdd={addExp} onClose={() => setModal(null)} month={month} year={year} />}
-      {modal === "income" && <IncomeModal onAdd={addInc} onClose={() => setModal(null)} month={month} year={year} />}
-      {modal === "settings" && (
-        <Modal onClose={() => setModal(null)} title="Postavke" color="#3D405B">
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <p style={{ fontSize: 13, color: "#8D8A85", marginBottom: 4 }}>Ukupno zapisa: <strong style={{ color: "#3D405B" }}>{data.expenses.length + data.incomes.length}</strong></p>
-            <button onClick={() => { exportData(data); showToast("Backup preuzet ✓"); }} style={sb}>📥 Preuzmi backup (JSON)</button>
-            <button onClick={() => fileRef.current && fileRef.current.click()} style={sb}>📤 Importiraj backup</button>
-            <input type="file" ref={fileRef} accept=".json" onChange={handleImport} style={{ display: "none" }} />
-            <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
-            <button onClick={reset} style={{ ...sb, color: "#E07A5F" }}>🗑️ Obriši sve podatke</button>
-            <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
-            <p style={{ fontSize: 11, color: "#BDB8B0", lineHeight: 1.5 }}>Podatci se sinkroniziraju preko oblaka (Firebase) i čuvaju lokalno kao backup. Oba mobitela vide iste podatke u realnom vremenu! 🔄</p>
-          </div>
-        </Modal>
-      )}
-    </div>
-  );
-}
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+        if (!authUser) {
+          setLoading(false);
+          setUser(null);
+          setUserDoc(null);
+          return;
+        }
 
-/* ──── Small Components ──── */
-function SumCard({ label, val, color, bold }) {
-  return (
-    <div style={{ background: "rgba(255,255,255,0.65)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", borderRadius: 16, padding: "14px 12px", textAlign: "center", boxShadow: "0 2px 12px rgba(61,64,91,0.04)", border: "1px solid rgba(255,255,255,0.5)" }}>
-      <div style={{ fontSize: 10, color: "#8D8A85", marginBottom: 5, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</div>
-      <div style={{ fontSize: bold ? 17 : 15, fontWeight: 700, color: color, fontFamily: "'Fraunces', serif" }}>{fmt(val)}</div>
-    </div>
-  );
-}
+        try {
+          // Check for redirect result (for Google Sign-In)
+          const result = await auth.getRedirectResult();
+          if (result?.user) {
+            const uid = result.user.uid;
+            const userDocSnap = await db.collection("users").doc(uid).get();
+            if (!userDocSnap.exists) {
+              const displayName = result.user.displayName || result.user.email.split("@")[0];
+              await db.collection("users").doc(uid).set({
+                email: result.user.email,
+                displayName: displayName,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+          }
 
-function Empty({ icon, text }) {
-  return (<div style={{ textAlign: "center", padding: "48px 20px", color: "#BDB8B0" }}><div style={{ fontSize: 48, marginBottom: 12 }}>{icon}</div><p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.6 }}>{text}</p></div>);
-}
+          const userDocSnap = await db.collection("users").doc(authUser.uid).get();
+          if (userDocSnap.exists) {
+            setUserDoc(userDocSnap.data());
 
-/* ──── Expense Modal ──── */
-function ExpenseModal({ onAdd, onClose, month, year }) {
-  const [amt, setAmt] = useState("");
-  const [cat, setCat] = useState("food");
-  const [mem, setMem] = useState("shared");
-  const [note, setNote] = useState("");
-  const [day, setDay] = useState(String(new Date().getDate()));
-  const go = () => { const a = parseFloat(amt); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, category: cat, member: mem, note: note, date: new Date(year, month, d).toISOString() }); };
-  return (
-    <Modal onClose={onClose} title="Novi rashod" color="#E07A5F">
-      <Field label="Iznos (€)"><input type="number" value={amt} onChange={e => setAmt(e.target.value)} placeholder="0" style={inp} autoFocus inputMode="decimal" /></Field>
-      <Field label="Dan u mjesecu"><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inp, width: 80 }} inputMode="numeric" /></Field>
-      <Field label="Kategorija">
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {CATEGORIES.map(c => <Chip key={c.id} active={cat === c.id} color={c.color} onClick={() => setCat(c.id)}>{c.icon} {c.label}</Chip>)}
-        </div>
-      </Field>
-      <Field label="Tko?">
-        <div style={{ display: "flex", gap: 6 }}>
-          {MEMBERS.map(m => <Chip key={m.id} active={mem === m.id} color={m.color} onClick={() => setMem(m.id)}>{m.icon} {m.label}</Chip>)}
-        </div>
-      </Field>
-      <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Konzum" style={inp} /></Field>
-      <button onClick={go} style={{ ...sub, background: "#E07A5F" }}>Dodaj rashod</button>
-    </Modal>
-  );
-}
+            if (userDocSnap.data().familyId) {
+              const familySnap = await db.collection("families").doc(userDocSnap.data().familyId).get();
+              if (familySnap.exists) {
+                setFamilyDoc(familySnap.data());
+              }
+            }
+          }
 
-/* ──── Income Modal ──── */
-function IncomeModal({ onAdd, onClose, month, year }) {
-  const [amt, setAmt] = useState("");
-  const [cat, setCat] = useState("salary");
-  const [mem, setMem] = useState("shared");
-  const [note, setNote] = useState("");
-  const [day, setDay] = useState(String(new Date().getDate()));
-  const go = () => { const a = parseFloat(amt); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, category: cat, member: mem, note: note, date: new Date(year, month, d).toISOString() }); };
-  return (
-    <Modal onClose={onClose} title="Novi prihod" color="#81B29A">
-      <Field label="Iznos (€)"><input type="number" value={amt} onChange={e => setAmt(e.target.value)} placeholder="0" style={inp} autoFocus inputMode="decimal" /></Field>
-      <Field label="Dan u mjesecu"><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inp, width: 80 }} inputMode="numeric" /></Field>
-      <Field label="Vrsta prihoda">
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {INC_CATEGORIES.map(c => <Chip key={c.id} active={cat === c.id} color={c.color} onClick={() => setCat(c.id)}>{c.icon} {c.label}</Chip>)}
-        </div>
-      </Field>
-      <Field label="Tko?">
-        <div style={{ display: "flex", gap: 6 }}>
-          {MEMBERS.map(m => <Chip key={m.id} active={mem === m.id} color={m.color} onClick={() => setMem(m.id)}>{m.icon} {m.label}</Chip>)}
-        </div>
-      </Field>
-      <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Plaća ožujak" style={inp} /></Field>
-      <button onClick={go} style={{ ...sub, background: "#81B29A" }}>Dodaj prihod</button>
-    </Modal>
-  );
-}
+          setUser({
+            uid: authUser.uid,
+            email: authUser.email,
+            displayName: authUser.displayName || authUser.email.split("@")[0]
+          });
+        } catch (err) {
+          console.error("Greška pri učitavanju:", err);
+        }
 
-/* ──── Shared UI ──── */
-function Modal({ onClose, title, color, children }) {
-  const [vis, setVis] = useState(false);
-  useEffect(() => { requestAnimationFrame(() => requestAnimationFrame(() => setVis(true))); }, []);
-  const close = () => { setVis(false); setTimeout(onClose, 250); };
-  return (
-    <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(61,64,91,0.3)", WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 100, opacity: vis ? 1 : 0, transition: "opacity 0.2s" }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: "#FAF6F1", borderRadius: "24px 24px 0 0", padding: "28px 22px 32px", paddingBottom: "calc(32px + env(safe-area-inset-bottom))", width: "100%", maxWidth: 500, maxHeight: "85vh", overflowY: "auto", transform: vis ? "translateY(0)" : "translateY(100%)", transition: "transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, margin: 0, color: color }}>{title}</h2>
-          <button onClick={close} style={{ background: "rgba(61,64,91,0.08)", border: "none", width: 32, height: 32, borderRadius: 10, fontSize: 16, color: "#8D8A85", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
+        setLoading(false);
+      });
 
-function Field({ label, children }) {
-  return (<div style={{ marginBottom: 16 }}><label style={{ display: "block", fontSize: 11, color: "#8D8A85", marginBottom: 6, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</label>{children}</div>);
-}
+      return () => unsubscribe();
+    }, []);
 
-function Chip({ active, color, onClick, children }) {
-  return (<button onClick={onClick} style={{ padding: "8px 12px", borderRadius: 10, border: "none", fontSize: 12, background: active ? color : "rgba(61,64,91,0.07)", color: active ? "#fff" : "#3D405B", transition: "all 0.2s" }}>{children}</button>);
-}
+    if (loading) {
+      return <LoadingScreen />;
+    }
 
-/* ──── Style tokens ──── */
-const cd = { background: "rgba(255,255,255,0.65)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", borderRadius: 20, padding: 18, marginBottom: 14, boxShadow: "0 2px 16px rgba(61,64,91,0.04)", border: "1px solid rgba(255,255,255,0.5)" };
-const ct = { fontFamily: "'Fraunces', serif", fontSize: 15, fontWeight: 400, margin: "0 0 14px", color: "#3D405B" };
-const nb = { background: "rgba(61,64,91,0.07)", border: "none", width: 36, height: 36, borderRadius: 10, fontSize: 13, color: "#3D405B", display: "flex", alignItems: "center", justifyContent: "center" };
-const fb = { display: "flex", alignItems: "center", gap: 6, padding: "12px 22px", borderRadius: 18, border: "none", color: "#fff", fontWeight: 600, boxShadow: "0 6px 24px rgba(61,64,91,0.18)" };
-const li = { display: "flex", alignItems: "center", gap: 8, padding: "12px 0", borderBottom: "1px solid rgba(61,64,91,0.06)" };
-const db = { background: "none", border: "none", color: "#BDB8B0", fontSize: 14, padding: "4px 8px", borderRadius: 6, marginLeft: 4 };
-const inp = { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid rgba(61,64,91,0.12)", fontSize: 15, fontFamily: "'DM Sans', sans-serif", color: "#3D405B", background: "#fff", outline: "none", boxSizing: "border-box" };
-const sub = { width: "100%", padding: "14px", borderRadius: 14, border: "none", color: "#fff", fontSize: 15, fontWeight: 600, marginTop: 8 };
-const sb = { width: "100%", padding: "14px", borderRadius: 14, border: "none", background: "rgba(61,64,91,0.06)", color: "#3D405B", fontSize: 14, fontWeight: 500, textAlign: "left" };
+    if (!user) {
+      return <AuthScreen />;
+    }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    if (!userDoc?.familyId) {
+      return <FamilySetup user={user} />;
+    }
+
+    if (!familyDoc) {
+      return <LoadingScreen />;
+    }
+
+    // Create members array with "shared" first
+    const members = [
+      {
+        id: "shared",
+        label: "Zajedničko",
+        icon: "👨‍👩‍👧‍👦",
+        color: "#81B29A"
+      },
+      ...familyDoc.members.map(m => ({
+        id: m.uid,
+        label: m.name,
+        icon: m.icon || "👤",
+        color: m.color
+      }))
+    ];
+
+    return (
+      <App
+        user={user}
+        familyId={userDoc.familyId}
+        familyName={familyDoc.name}
+        members={members}
+      />
+    );
+  }
+
+  // Style tokens
+  const cd = { background: "rgba(255,255,255,0.65)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", borderRadius: 20, padding: 18, marginBottom: 14, boxShadow: "0 2px 16px rgba(61,64,91,0.04)", border: "1px solid rgba(255,255,255,0.5)" };
+  const cd_auth = { ...cd, width: '100%', maxWidth: '400px' };
+  const ct = { fontFamily: "'Fraunces', serif", fontSize: 15, fontWeight: 400, margin: "0 0 14px", color: "#3D405B" };
+  const nb = { background: "rgba(61,64,91,0.07)", border: "none", width: 36, height: 36, borderRadius: 10, fontSize: 13, color: "#3D405B", display: "flex", alignItems: "center", justifyContent: "center" };
+  const fb = { display: "flex", alignItems: "center", gap: 6, padding: "12px 22px", borderRadius: 18, border: "none", color: "#fff", fontWeight: 600, boxShadow: "0 6px 24px rgba(61,64,91,0.18)" };
+  const li = { display: "flex", alignItems: "center", gap: 8, padding: "12px 0", borderBottom: "1px solid rgba(61,64,91,0.06)" };
+  const db = { background: "none", border: "none", color: "#BDB8B0", fontSize: 14, padding: "4px 8px", borderRadius: 6, marginLeft: 4 };
+  const inp = { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid rgba(61,64,91,0.12)", fontSize: 15, fontFamily: "'DM Sans', sans-serif", color: "#3D405B", background: "#fff", outline: "none", boxSizing: "border-box" };
+  const sub = { width: "100%", padding: "14px", borderRadius: 14, border: "none", color: "#fff", fontSize: 15, fontWeight: 600, marginTop: 8 };
+  const sub_primary = { ...sub, background: "#3D405B" };
+  const sb = { width: "100%", padding: "14px", borderRadius: 14, border: "none", background: "rgba(61,64,91,0.06)", color: "#3D405B", fontSize: 14, fontWeight: 500, textAlign: "left" };
+  const tab_container = { display: "flex", gap: 0, marginBottom: 20, borderRadius: 12, overflow: "hidden", background: "rgba(255,255,255,0.3)" };
+  const tab_btn = { flex: 1, padding: "12px", border: "none", background: "transparent", fontWeight: 600, cursor: "pointer", fontSize: 14, color: "#3D405B", transition: "all 0.2s" };
+  const tab_btn_active = { background: "white", color: "#3D405B" };
+  const error_text = { color: "#E07A5F", fontSize: 13, marginTop: 8 };
+  const success_text = { color: "#81B29A", fontSize: 13, marginTop: 8 };
+
+  ReactDOM.createRoot(document.getElementById("root")).render(<AppRoot />);
 </script>
 
 <script>
-// ──── Service Worker Registration ────
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js').then(function(reg) {
-      // Check for updates every 30 minutes
       setInterval(function() { reg.update(); }, 1800000);
 
       reg.addEventListener('updatefound', function() {
@@ -615,12 +1261,10 @@ if ('serviceWorker' in navigator) {
       console.log('SW registration failed:', err);
     });
 
-    // Listen for SW controller change (new version activated)
     var refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', function() {
       if (!refreshing) {
         refreshing = true;
-        // Don't auto-reload, let the banner handle it
       }
     });
   });
