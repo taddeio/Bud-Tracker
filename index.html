@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Obiteljski Budžet</title>
 
-<!-- PWA & iOS -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Budžet">
@@ -14,7 +13,6 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&family=Fraunces:opsz,wght@9..144,400;9..144,700&display=swap" rel="stylesheet">
@@ -36,7 +34,7 @@
   input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   input[type="number"] { -moz-appearance: textfield; }
   input:focus { border-color: rgba(61,64,91,0.3) !important; outline: none; }
-  button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; -webkit-tap-highlight-color: transparent; font-family: 'DM Sans', sans-serif; }
   button:active { transform: scale(0.97); }
 
   .update-banner {
@@ -50,9 +48,26 @@
   .update-banner.visible { transform: translateY(0); }
   .update-banner button {
     background: #81B29A; color: #fff; border: none; padding: 6px 16px;
-    border-radius: 8px; font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    border-radius: 8px; font-size: 13px; font-weight: 600;
   }
-  @keyframes fadeIn { from { opacity:0; transform:translateX(-50%) translateY(-8px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  /* Donut chart via conic-gradient */
+  .donut {
+    width: 110px; height: 110px; border-radius: 50%; position: relative; flex-shrink: 0;
+  }
+  .donut::after {
+    content: ''; position: absolute; top: 25%; left: 25%; width: 50%; height: 50%;
+    border-radius: 50%; background: rgba(255,255,255,0.65);
+  }
 </style>
 </head>
 <body>
@@ -62,34 +77,26 @@
 </div>
 <div id="root"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-
 <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then(function(reg) {
-    setInterval(function() { reg.update(); }, 30 * 60 * 1000);
-    reg.addEventListener('updatefound', function() {
-      var nw = reg.installing;
-      nw.addEventListener('statechange', function() {
-        if (nw.state === 'activated' && navigator.serviceWorker.controller) {
-          document.getElementById('update-banner').classList.add('visible');
-        }
-      });
-    });
-  });
-  navigator.serviceWorker.addEventListener('controllerchange', function() {
-    document.getElementById('update-banner').classList.add('visible');
-  });
-}
+  // Error catcher
+  window.onerror = function(msg, url, line) {
+    document.getElementById('root').innerHTML =
+      '<div style="padding:40px 20px;text-align:center;color:#E07A5F;">' +
+      '<h2>Greška pri učitavanju</h2>' +
+      '<p style="font-size:13px;color:#8D8A85;margin-top:12px;">' + msg + ' (line ' + line + ')</p>' +
+      '<button onclick="location.reload()" style="margin-top:20px;padding:12px 24px;background:#3D405B;color:#fff;border:none;border-radius:12px;">Pokušaj ponovno</button>' +
+      '</div>';
+  };
 </script>
 
-<script type="text/babel">
-const { useState, useEffect, useRef } = React;
-const { PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } = Recharts;
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 
+<script type="text/babel" data-type="module">
+const { useState, useEffect, useRef } = React;
+
+/* ──── Constants ──── */
 const CATEGORIES = [
   { id: "food", label: "Hrana & kućanstvo", icon: "🛒", color: "#E07A5F" },
   { id: "housing", label: "Stanarina / rata", icon: "🏠", color: "#3D405B" },
@@ -101,99 +108,125 @@ const MEMBERS = [
   { id: "member1", label: "Ja", icon: "👤", color: "#E07A5F" },
   { id: "member2", label: "Partner/ica", icon: "👤", color: "#3D405B" },
 ];
-const MONTHS_HR = ["Siječanj","Veljača","Ožujak","Travanj","Svibanj","Lipanj","Srpanj","Kolovoz","Rujan","Listopad","Studeni","Prosinac"];
+const MONTHS = ["Siječanj","Veljača","Ožujak","Travanj","Svibanj","Lipanj","Srpanj","Kolovoz","Rujan","Listopad","Studeni","Prosinac"];
 const fmt = (n) => new Intl.NumberFormat("hr-HR", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
-/* ── Data persistence via localStorage (survives app updates) ── */
-const DB_KEY = "family_finance_v2";
-const loadData = () => {
-  try {
-    const d = JSON.parse(localStorage.getItem(DB_KEY));
-    if (d) return { expenses: Array.isArray(d.expenses) ? d.expenses : [], incomes: Array.isArray(d.incomes) ? d.incomes : [] };
-  } catch {}
-  return { expenses: [], incomes: [] };
-};
-const saveData = (d) => { try { localStorage.setItem(DB_KEY, JSON.stringify(d)); } catch {} };
+/* ──── Persistence ──── */
+const DB = "family_finance_v2";
+const load = () => { try { const d = JSON.parse(localStorage.getItem(DB)); if (d) return { expenses: d.expenses || [], incomes: d.incomes || [] }; } catch {} return { expenses: [], incomes: [] }; };
+const save = (d) => { try { localStorage.setItem(DB, JSON.stringify(d)); } catch {} };
 
-/* ── Backup export/import ── */
 const exportData = (data) => {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url;
-  a.download = "budzet-backup-" + new Date().toISOString().slice(0,10) + ".json";
-  a.click(); URL.revokeObjectURL(url);
+  const b = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(b);
+  a.download = "budzet-backup-" + new Date().toISOString().slice(0,10) + ".json"; a.click();
 };
-const importData = (file) => new Promise((resolve, reject) => {
+const importData = (file) => new Promise((res, rej) => {
   const r = new FileReader();
-  r.onload = (e) => { try { const d = JSON.parse(e.target.result); if (d.expenses && d.incomes) resolve(d); else reject(); } catch { reject(); } };
+  r.onload = (e) => { try { const d = JSON.parse(e.target.result); (d.expenses && d.incomes) ? res(d) : rej(); } catch { rej(); } };
   r.readAsText(file);
 });
 
+/* ──── CSS-only Charts ──── */
+function DonutChart({ data }) {
+  const total = data.reduce((s, d) => s + d.total, 0);
+  if (total === 0) return null;
+  let acc = 0;
+  const stops = data.map(d => {
+    const start = acc; acc += (d.total / total) * 360;
+    return d.color + " " + start + "deg " + acc + "deg";
+  }).join(", ");
+  return (
+    <div className="donut" style={{ background: "conic-gradient(" + stops + ")" }} />
+  );
+}
+
+function BarViz({ data, maxVal }) {
+  if (maxVal === 0) return null;
+  return (
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 80, padding: "0 4px" }}>
+      {data.map((d, i) => (
+        <div key={i} style={{ flex: 1, textAlign: "center" }}>
+          <div style={{
+            height: Math.max(4, (d.amount / maxVal) * 60),
+            background: "linear-gradient(180deg, #E07A5F 0%, #E07A5F88 100%)",
+            borderRadius: "6px 6px 0 0",
+            transition: "height 0.4s ease",
+            marginBottom: 6,
+          }} />
+          <div style={{ fontSize: 10, color: "#8D8A85" }}>{d.name}</div>
+          {d.amount > 0 && <div style={{ fontSize: 10, fontWeight: 600, color: "#3D405B", marginTop: 2 }}>{fmt(d.amount)}</div>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ──── Main App ──── */
 function App() {
   const now = new Date();
-  const [data, setData] = useState(loadData);
+  const [data, setData] = useState(load);
   const [month, setMonth] = useState(now.getMonth());
   const [year, setYear] = useState(now.getFullYear());
-  const [showAdd, setShowAdd] = useState(false);
-  const [showIncome, setShowIncome] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [modal, setModal] = useState(null); // "expense" | "income" | "settings" | null
   const [tab, setTab] = useState("dashboard");
-  const [animIn, setAnimIn] = useState(false);
+  const [anim, setAnim] = useState(false);
   const [toast, setToast] = useState(null);
   const fileRef = useRef(null);
 
-  useEffect(() => { setTimeout(() => setAnimIn(true), 50); }, []);
-  useEffect(() => { saveData(data); }, [data]);
+  useEffect(() => { setTimeout(() => setAnim(true), 50); }, []);
+  useEffect(() => { save(data); }, [data]);
 
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2500); };
+  const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2200); };
 
-  const currentExpenses = data.expenses.filter(e => { const d = new Date(e.date); return d.getMonth() === month && d.getFullYear() === year; });
-  const currentIncomes = data.incomes.filter(e => { const d = new Date(e.date); return d.getMonth() === month && d.getFullYear() === year; });
-  const totalExpense = currentExpenses.reduce((s, e) => s + e.amount, 0);
-  const totalIncome = currentIncomes.reduce((s, e) => s + e.amount, 0);
-  const balance = totalIncome - totalExpense;
+  const cur = (arr) => arr.filter(e => { const d = new Date(e.date); return d.getMonth() === month && d.getFullYear() === year; });
+  const curExp = cur(data.expenses);
+  const curInc = cur(data.incomes);
+  const totExp = curExp.reduce((s, e) => s + e.amount, 0);
+  const totInc = curInc.reduce((s, e) => s + e.amount, 0);
+  const bal = totInc - totExp;
 
-  const byCat = CATEGORIES.map(c => ({ ...c, total: currentExpenses.filter(e => e.category === c.id).reduce((s, e) => s + e.amount, 0) })).filter(c => c.total > 0);
-  const byMember = MEMBERS.map(m => ({ ...m, total: currentExpenses.filter(e => e.member === m.id).reduce((s, e) => s + e.amount, 0) })).filter(m => m.total > 0);
+  const byCat = CATEGORIES.map(c => ({ ...c, total: curExp.filter(e => e.category === c.id).reduce((s, e) => s + e.amount, 0) })).filter(c => c.total > 0);
+  const byMem = MEMBERS.map(m => ({ ...m, total: curExp.filter(e => e.member === m.id).reduce((s, e) => s + e.amount, 0) })).filter(m => m.total > 0);
 
-  const weeklyData = (() => {
+  const weekly = (() => {
     const w = [{ name: "T1", amount: 0 }, { name: "T2", amount: 0 }, { name: "T3", amount: 0 }, { name: "T4", amount: 0 }];
-    currentExpenses.forEach(e => { const d = new Date(e.date).getDate(); w[Math.min(3, Math.floor((d - 1) / 7))].amount += e.amount; });
+    curExp.forEach(e => { const d = new Date(e.date).getDate(); w[Math.min(3, Math.floor((d - 1) / 7))].amount += e.amount; });
     return w;
   })();
+  const maxWeekly = Math.max(...weekly.map(w => w.amount), 1);
 
-  const changeMonth = (dir) => {
+  const chgMonth = (dir) => {
     let m = month + dir, y = year;
     if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
     setMonth(m); setYear(y);
   };
 
-  const addExpense = (exp) => { setData(p => ({ ...p, expenses: [...p.expenses, { ...exp, id: Date.now() }] })); setShowAdd(false); showToast("Rashod dodan ✓"); };
-  const addIncome = (inc) => { setData(p => ({ ...p, incomes: [...p.incomes, { ...inc, id: Date.now() }] })); setShowIncome(false); showToast("Prihod dodan ✓"); };
-  const deleteExpense = (id) => { setData(p => ({ ...p, expenses: p.expenses.filter(e => e.id !== id) })); showToast("Obrisano"); };
-  const deleteIncome = (id) => { setData(p => ({ ...p, incomes: p.incomes.filter(e => e.id !== id) })); showToast("Obrisano"); };
+  const addExp = (e) => { setData(p => ({ ...p, expenses: [...p.expenses, { ...e, id: Date.now() }] })); setModal(null); showToast("Rashod dodan ✓"); };
+  const addInc = (e) => { setData(p => ({ ...p, incomes: [...p.incomes, { ...e, id: Date.now() }] })); setModal(null); showToast("Prihod dodan ✓"); };
+  const delExp = (id) => { setData(p => ({ ...p, expenses: p.expenses.filter(e => e.id !== id) })); showToast("Obrisano"); };
+  const delInc = (id) => { setData(p => ({ ...p, incomes: p.incomes.filter(e => e.id !== id) })); showToast("Obrisano"); };
 
   const handleImport = async (e) => {
-    const file = e.target.files[0]; if (!file) return;
+    const f = e.target.files[0]; if (!f) return;
     try {
-      const imp = await importData(file);
-      const existE = new Set(data.expenses.map(e => e.id));
-      const existI = new Set(data.incomes.map(e => e.id));
-      const mE = [...data.expenses, ...imp.expenses.filter(e => !existE.has(e.id))];
-      const mI = [...data.incomes, ...imp.incomes.filter(e => !existI.has(e.id))];
-      setData({ expenses: mE, incomes: mI }); showToast("Importirano ✓");
-    } catch { showToast("Greška pri importu ✕"); }
+      const imp = await importData(f);
+      const eIds = new Set(data.expenses.map(x => x.id));
+      const iIds = new Set(data.incomes.map(x => x.id));
+      setData({ expenses: [...data.expenses, ...imp.expenses.filter(x => !eIds.has(x.id))], incomes: [...data.incomes, ...imp.incomes.filter(x => !iIds.has(x.id))] });
+      showToast("Importirano ✓");
+    } catch { showToast("Greška ✕"); }
     e.target.value = "";
   };
 
-  const resetAll = () => {
-    if (confirm("Obrisati SVE podatke?\n\nPreporučamo prvo napraviti backup.")) {
-      setData({ expenses: [], incomes: [] }); localStorage.removeItem(DB_KEY); showToast("Obrisano");
+  const reset = () => {
+    if (confirm("Obrisati SVE podatke?\nPreporučamo prvo backup.")) {
+      setData({ expenses: [], incomes: [] }); localStorage.removeItem(DB); showToast("Obrisano"); setModal(null);
     }
   };
 
   return (
-    <div style={{ minHeight: "100vh", opacity: animIn ? 1 : 0, transition: "opacity 0.5s ease", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", opacity: anim ? 1 : 0, transition: "opacity 0.5s", paddingBottom: 100 }}>
 
       {toast && <div style={{ position: "fixed", top: 60, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "#3D405B", color: "#FAF6F1", padding: "10px 20px", borderRadius: 12, fontSize: 14, fontWeight: 500, boxShadow: "0 4px 20px rgba(0,0,0,0.15)", animation: "fadeIn 0.3s ease" }}>{toast}</div>}
 
@@ -203,38 +236,38 @@ function App() {
           <h1 style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 24, margin: 0, letterSpacing: "-0.5px" }}>Obiteljski budžet</h1>
           <p style={{ margin: "3px 0 0", fontSize: 12, color: "#8D8A85", fontWeight: 300 }}>Sve na jednom mjestu ✨</p>
         </div>
-        <button onClick={() => setShowSettings(true)} style={{ background: "rgba(61,64,91,0.07)", border: "none", width: 38, height: 38, borderRadius: 12, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>⚙️</button>
+        <button onClick={() => setModal("settings")} style={{ background: "rgba(61,64,91,0.07)", border: "none", width: 38, height: 38, borderRadius: 12, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>⚙️</button>
       </div>
 
-      {/* Month */}
+      {/* Month nav */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18, padding: "0 20px 16px", maxWidth: 500, margin: "0 auto" }}>
-        <button onClick={() => changeMonth(-1)} style={navBtn}>◀</button>
-        <span style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 400, minWidth: 150, textAlign: "center" }}>{MONTHS_HR[month]} {year}</span>
-        <button onClick={() => changeMonth(1)} style={navBtn}>▶</button>
+        <button onClick={() => chgMonth(-1)} style={nb}>◀</button>
+        <span style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 400, minWidth: 150, textAlign: "center" }}>{MONTHS[month]} {year}</span>
+        <button onClick={() => chgMonth(1)} style={nb}>▶</button>
       </div>
 
       {/* Tabs */}
       <div style={{ display: "flex", gap: 6, padding: "0 20px 14px", maxWidth: 500, margin: "0 auto" }}>
         {[["dashboard","📊 Pregled"],["list","📋 Popis"]].map(([k,l]) => (
-          <button key={k} onClick={() => setTab(k)} style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", fontSize: 13, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", background: tab === k ? "#3D405B" : "rgba(61,64,91,0.07)", color: tab === k ? "#FAF6F1" : "#3D405B", transition: "all 0.2s" }}>{l}</button>
+          <button key={k} onClick={() => setTab(k)} style={{ flex: 1, padding: "10px 0", borderRadius: 12, border: "none", fontSize: 13, fontWeight: 500, background: tab === k ? "#3D405B" : "rgba(61,64,91,0.07)", color: tab === k ? "#FAF6F1" : "#3D405B", transition: "all 0.2s" }}>{l}</button>
         ))}
       </div>
 
       <div style={{ maxWidth: 500, margin: "0 auto", padding: "0 20px" }}>
         {tab === "dashboard" ? (<>
+          {/* Summary cards */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 18 }}>
-            <SummaryCard label="Prihodi" value={totalIncome} color="#81B29A" />
-            <SummaryCard label="Rashodi" value={totalExpense} color="#E07A5F" />
-            <SummaryCard label="Bilanca" value={balance} color={balance >= 0 ? "#81B29A" : "#E07A5F"} bold />
+            <SumCard label="Prihodi" val={totInc} color="#81B29A" />
+            <SumCard label="Rashodi" val={totExp} color="#E07A5F" />
+            <SumCard label="Bilanca" val={bal} color={bal >= 0 ? "#81B29A" : "#E07A5F"} bold />
           </div>
 
+          {/* Category donut */}
           {byCat.length > 0 && (
-            <div style={cardS}>
-              <h3 style={cardTitleS}>Po kategorijama</h3>
+            <div style={cd}>
+              <h3 style={ct}>Po kategorijama</h3>
               <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                <div style={{ width: 110, height: 110, flexShrink: 0 }}>
-                  <ResponsiveContainer><PieChart><Pie data={byCat} dataKey="total" cx="50%" cy="50%" outerRadius={50} innerRadius={28} paddingAngle={3} strokeWidth={0}>{byCat.map((c, i) => <Cell key={i} fill={c.color} />)}</Pie></PieChart></ResponsiveContainer>
-                </div>
+                <DonutChart data={byCat} />
                 <div style={{ flex: 1 }}>
                   {byCat.map(c => (
                     <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
@@ -248,154 +281,167 @@ function App() {
             </div>
           )}
 
-          {byMember.length > 0 && (
-            <div style={cardS}>
-              <h3 style={cardTitleS}>Po članovima</h3>
-              {byMember.map(m => { const pct = totalExpense > 0 ? (m.total / totalExpense * 100) : 0; return (
-                <div key={m.id} style={{ marginBottom: 10 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}><span>{m.icon} {m.label}</span><span style={{ fontWeight: 600 }}>{fmt(m.total)}</span></div>
-                  <div style={{ height: 8, background: "rgba(61,64,91,0.08)", borderRadius: 4, overflow: "hidden" }}><div style={{ height: "100%", width: pct + "%", background: m.color, borderRadius: 4, transition: "width 0.5s ease" }} /></div>
-                </div>
-              ); })}
-            </div>
-          )}
-
-          {currentExpenses.length > 0 && (
-            <div style={cardS}>
-              <h3 style={cardTitleS}>Tjedni trend rashoda</h3>
-              <div style={{ height: 110 }}>
-                <ResponsiveContainer>
-                  <AreaChart data={weeklyData}>
-                    <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#E07A5F" stopOpacity={0.3} /><stop offset="100%" stopColor="#E07A5F" stopOpacity={0.02} /></linearGradient></defs>
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#8D8A85" }} axisLine={false} tickLine={false} />
-                    <YAxis hide />
-                    <Tooltip formatter={(v) => fmt(v)} contentStyle={{ borderRadius: 10, border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", fontFamily: "'DM Sans', sans-serif", fontSize: 13 }} />
-                    <Area type="monotone" dataKey="amount" stroke="#E07A5F" strokeWidth={2.5} fill="url(#ag)" dot={{ r: 4, fill: "#E07A5F", strokeWidth: 0 }} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          )}
-
-          {currentExpenses.length === 0 && currentIncomes.length === 0 && <EmptyState icon="📝" text={"Još nema zapisa za " + MONTHS_HR[month].toLowerCase() + ". Dodaj prvi unos!"} />}
-        </>) : (<>
-          {currentIncomes.length > 0 && (
-            <div style={cardS}><h3 style={cardTitleS}>Prihodi</h3>
-              {currentIncomes.sort((a,b) => new Date(b.date) - new Date(a.date)).map(inc => (
-                <div key={inc.id} style={listItemS}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 500 }}>{inc.note || "Prihod"}</div>
-                    <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(inc.date).toLocaleDateString("hr-HR")}{inc.member && (" · " + (MEMBERS.find(m => m.id === inc.member) || {}).label)}</div>
-                  </div>
-                  <span style={{ fontWeight: 600, color: "#81B29A", fontSize: 14 }}>+{fmt(inc.amount)}</span>
-                  <button onClick={() => deleteIncome(inc.id)} style={delBtnS}>✕</button>
-                </div>
-              ))}
-            </div>
-          )}
-          {currentExpenses.length > 0 && (
-            <div style={cardS}><h3 style={cardTitleS}>Rashodi</h3>
-              {currentExpenses.sort((a,b) => new Date(b.date) - new Date(a.date)).map(exp => {
-                const cat = CATEGORIES.find(c => c.id === exp.category);
+          {/* Member bars */}
+          {byMem.length > 0 && (
+            <div style={cd}>
+              <h3 style={ct}>Po članovima</h3>
+              {byMem.map(m => {
+                const pct = totExp > 0 ? (m.total / totExp * 100) : 0;
                 return (
-                  <div key={exp.id} style={listItemS}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: cat ? cat.color + "18" : "#eee", fontSize: 18, flexShrink: 0 }}>{cat ? cat.icon : "💰"}</div>
-                    <div style={{ flex: 1, marginLeft: 10 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500 }}>{exp.note || (cat ? cat.label : "Trošak")}</div>
-                      <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(exp.date).toLocaleDateString("hr-HR")}{exp.member && (" · " + (MEMBERS.find(m => m.id === exp.member) || {}).label)}</div>
-                    </div>
-                    <span style={{ fontWeight: 600, color: "#E07A5F", fontSize: 14 }}>-{fmt(exp.amount)}</span>
-                    <button onClick={() => deleteExpense(exp.id)} style={delBtnS}>✕</button>
+                  <div key={m.id} style={{ marginBottom: 10 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}><span>{m.icon} {m.label}</span><span style={{ fontWeight: 600 }}>{fmt(m.total)}</span></div>
+                    <div style={{ height: 8, background: "rgba(61,64,91,0.08)", borderRadius: 4, overflow: "hidden" }}><div style={{ height: "100%", width: pct + "%", background: m.color, borderRadius: 4, transition: "width 0.5s" }} /></div>
                   </div>
                 );
               })}
             </div>
           )}
-          {currentExpenses.length === 0 && currentIncomes.length === 0 && <EmptyState icon="📋" text="Nema zapisa za ovaj mjesec." />}
+
+          {/* Weekly trend bars */}
+          {curExp.length > 0 && (
+            <div style={cd}>
+              <h3 style={ct}>Tjedni trend rashoda</h3>
+              <BarViz data={weekly} maxVal={maxWeekly} />
+            </div>
+          )}
+
+          {curExp.length === 0 && curInc.length === 0 && <Empty icon="📝" text={"Još nema zapisa za " + MONTHS[month].toLowerCase() + ". Dodaj prvi unos!"} />}
+        </>) : (<>
+          {/* LIST TAB */}
+          {curInc.length > 0 && (
+            <div style={cd}><h3 style={ct}>Prihodi</h3>
+              {curInc.sort((a,b) => new Date(b.date) - new Date(a.date)).map(inc => (
+                <div key={inc.id} style={li}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 14, fontWeight: 500 }}>{inc.note || "Prihod"}</div>
+                    <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(inc.date).toLocaleDateString("hr-HR")}{inc.member ? " · " + (MEMBERS.find(m => m.id === inc.member) || {}).label : ""}</div>
+                  </div>
+                  <span style={{ fontWeight: 600, color: "#81B29A", fontSize: 14 }}>+{fmt(inc.amount)}</span>
+                  <button onClick={() => delInc(inc.id)} style={db}>✕</button>
+                </div>
+              ))}
+            </div>
+          )}
+          {curExp.length > 0 && (
+            <div style={cd}><h3 style={ct}>Rashodi</h3>
+              {curExp.sort((a,b) => new Date(b.date) - new Date(a.date)).map(exp => {
+                const cat = CATEGORIES.find(c => c.id === exp.category);
+                return (
+                  <div key={exp.id} style={li}>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: cat ? cat.color + "18" : "#eee", fontSize: 18, flexShrink: 0 }}>{cat ? cat.icon : "💰"}</div>
+                    <div style={{ flex: 1, marginLeft: 10 }}>
+                      <div style={{ fontSize: 14, fontWeight: 500 }}>{exp.note || (cat ? cat.label : "Trošak")}</div>
+                      <div style={{ fontSize: 11, color: "#8D8A85", marginTop: 2 }}>{new Date(exp.date).toLocaleDateString("hr-HR")}{exp.member ? " · " + (MEMBERS.find(m => m.id === exp.member) || {}).label : ""}</div>
+                    </div>
+                    <span style={{ fontWeight: 600, color: "#E07A5F", fontSize: 14 }}>-{fmt(exp.amount)}</span>
+                    <button onClick={() => delExp(exp.id)} style={db}>✕</button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {curExp.length === 0 && curInc.length === 0 && <Empty icon="📋" text="Nema zapisa za ovaj mjesec." />}
         </>)}
       </div>
 
       {/* FABs */}
       <div style={{ position: "fixed", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", display: "flex", gap: 10, zIndex: 50 }}>
-        <button onClick={() => setShowIncome(true)} style={{ ...fabS, background: "#81B29A" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Prihod</span></button>
-        <button onClick={() => setShowAdd(true)} style={{ ...fabS, background: "#E07A5F" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Rashod</span></button>
+        <button onClick={() => setModal("income")} style={{ ...fb, background: "#81B29A" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Prihod</span></button>
+        <button onClick={() => setModal("expense")} style={{ ...fb, background: "#E07A5F" }}><span style={{ fontSize: 20, lineHeight: 1 }}>+</span><span style={{ fontSize: 13 }}>Rashod</span></button>
       </div>
 
-      {showAdd && <ExpenseModal onAdd={addExpense} onClose={() => setShowAdd(false)} month={month} year={year} />}
-      {showIncome && <IncomeModal onAdd={addIncome} onClose={() => setShowIncome(false)} month={month} year={year} />}
-      {showSettings && (
-        <ModalWrapper onClose={() => setShowSettings(false)} title="Postavke" color="#3D405B">
+      {/* Modals */}
+      {modal === "expense" && <ExpenseModal onAdd={addExp} onClose={() => setModal(null)} month={month} year={year} />}
+      {modal === "income" && <IncomeModal onAdd={addInc} onClose={() => setModal(null)} month={month} year={year} />}
+      {modal === "settings" && (
+        <Modal onClose={() => setModal(null)} title="Postavke" color="#3D405B">
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <p style={{ fontSize: 13, color: "#8D8A85", marginBottom: 4 }}>Ukupno zapisa: <strong style={{ color: "#3D405B" }}>{data.expenses.length + data.incomes.length}</strong></p>
-            <button onClick={() => { exportData(data); showToast("Backup preuzet ✓"); }} style={settBtnS}>📥 Preuzmi backup (JSON)</button>
-            <button onClick={() => fileRef.current && fileRef.current.click()} style={settBtnS}>📤 Importiraj backup</button>
+            <button onClick={() => { exportData(data); showToast("Backup preuzet ✓"); }} style={sb}>📥 Preuzmi backup (JSON)</button>
+            <button onClick={() => fileRef.current && fileRef.current.click()} style={sb}>📤 Importiraj backup</button>
             <input type="file" ref={fileRef} accept=".json" onChange={handleImport} style={{ display: "none" }} />
-            <div style={{ height: 1, background: "rgba(61,64,91,0.08)", margin: "8px 0" }} />
-            <button onClick={() => { resetAll(); setShowSettings(false); }} style={{ ...settBtnS, color: "#E07A5F" }}>🗑️ Obriši sve podatke</button>
-            <div style={{ height: 1, background: "rgba(61,64,91,0.08)", margin: "8px 0" }} />
-            <p style={{ fontSize: 11, color: "#BDB8B0", lineHeight: 1.5 }}>Podatci se čuvaju lokalno na uređaju (localStorage). Ažuriranje aplikacije NE briše podatke. Za sigurnost, redovito preuzmi backup.</p>
+            <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
+            <button onClick={reset} style={{ ...sb, color: "#E07A5F" }}>🗑️ Obriši sve podatke</button>
+            <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
+            <p style={{ fontSize: 11, color: "#BDB8B0", lineHeight: 1.5 }}>Podatci se čuvaju lokalno (localStorage). Ažuriranje app-a NE briše podatke. Za sigurnost, redovito preuzmi backup.</p>
           </div>
-        </ModalWrapper>
+        </Modal>
       )}
     </div>
   );
 }
 
-function SummaryCard({ label, value, color, bold }) {
+/* ──── Small Components ──── */
+function SumCard({ label, val, color, bold }) {
   return (
     <div style={{ background: "rgba(255,255,255,0.65)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", borderRadius: 16, padding: "14px 12px", textAlign: "center", boxShadow: "0 2px 12px rgba(61,64,91,0.04)", border: "1px solid rgba(255,255,255,0.5)" }}>
       <div style={{ fontSize: 10, color: "#8D8A85", marginBottom: 5, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</div>
-      <div style={{ fontSize: bold ? 17 : 15, fontWeight: 700, color: color, fontFamily: "'Fraunces', serif" }}>{fmt(value)}</div>
+      <div style={{ fontSize: bold ? 17 : 15, fontWeight: 700, color: color, fontFamily: "'Fraunces', serif" }}>{fmt(val)}</div>
     </div>
   );
 }
 
-function EmptyState({ icon, text }) {
+function Empty({ icon, text }) {
   return (<div style={{ textAlign: "center", padding: "48px 20px", color: "#BDB8B0" }}><div style={{ fontSize: 48, marginBottom: 12 }}>{icon}</div><p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.6 }}>{text}</p></div>);
 }
 
+/* ──── Expense Modal ──── */
 function ExpenseModal({ onAdd, onClose, month, year }) {
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("food");
-  const [member, setMember] = useState("shared");
+  const [amt, setAmt] = useState("");
+  const [cat, setCat] = useState("food");
+  const [mem, setMem] = useState("shared");
   const [note, setNote] = useState("");
-  const [day, setDay] = useState(new Date().getDate().toString());
-  const submit = () => { const a = parseFloat(amount); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, category, member, note, date: new Date(year, month, d).toISOString() }); };
+  const [day, setDay] = useState(String(new Date().getDate()));
+  const go = () => { const a = parseFloat(amt); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, category: cat, member: mem, note: note, date: new Date(year, month, d).toISOString() }); };
   return (
-    <ModalWrapper onClose={onClose} title="Novi rashod" color="#E07A5F">
-      <div style={fgS}><label style={flS}>Iznos (€)</label><input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0" style={inpS} autoFocus inputMode="decimal" /></div>
-      <div style={fgS}><label style={flS}>Dan u mjesecu</label><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inpS, width: 80 }} inputMode="numeric" /></div>
-      <div style={fgS}><label style={flS}>Kategorija</label><div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{CATEGORIES.map(c => (<button key={c.id} onClick={() => setCategory(c.id)} style={{ padding: "8px 12px", borderRadius: 10, border: "none", fontSize: 12, fontFamily: "'DM Sans', sans-serif", background: category === c.id ? c.color : "rgba(61,64,91,0.07)", color: category === c.id ? "#fff" : "#3D405B", transition: "all 0.2s" }}>{c.icon} {c.label}</button>))}</div></div>
-      <div style={fgS}><label style={flS}>Tko?</label><div style={{ display: "flex", gap: 6 }}>{MEMBERS.map(m => (<button key={m.id} onClick={() => setMember(m.id)} style={{ padding: "8px 12px", borderRadius: 10, border: "none", fontSize: 12, fontFamily: "'DM Sans', sans-serif", background: member === m.id ? m.color : "rgba(61,64,91,0.07)", color: member === m.id ? "#fff" : "#3D405B", transition: "all 0.2s" }}>{m.icon} {m.label}</button>))}</div></div>
-      <div style={fgS}><label style={flS}>Bilješka</label><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Konzum" style={inpS} /></div>
-      <button onClick={submit} style={{ ...subBtnS, background: "#E07A5F" }}>Dodaj rashod</button>
-    </ModalWrapper>
+    <Modal onClose={onClose} title="Novi rashod" color="#E07A5F">
+      <Field label="Iznos (€)"><input type="number" value={amt} onChange={e => setAmt(e.target.value)} placeholder="0" style={inp} autoFocus inputMode="decimal" /></Field>
+      <Field label="Dan u mjesecu"><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inp, width: 80 }} inputMode="numeric" /></Field>
+      <Field label="Kategorija">
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {CATEGORIES.map(c => <Chip key={c.id} active={cat === c.id} color={c.color} onClick={() => setCat(c.id)}>{c.icon} {c.label}</Chip>)}
+        </div>
+      </Field>
+      <Field label="Tko?">
+        <div style={{ display: "flex", gap: 6 }}>
+          {MEMBERS.map(m => <Chip key={m.id} active={mem === m.id} color={m.color} onClick={() => setMem(m.id)}>{m.icon} {m.label}</Chip>)}
+        </div>
+      </Field>
+      <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Konzum" style={inp} /></Field>
+      <button onClick={go} style={{ ...sub, background: "#E07A5F" }}>Dodaj rashod</button>
+    </Modal>
   );
 }
 
+/* ──── Income Modal ──── */
 function IncomeModal({ onAdd, onClose, month, year }) {
-  const [amount, setAmount] = useState("");
-  const [member, setMember] = useState("shared");
+  const [amt, setAmt] = useState("");
+  const [mem, setMem] = useState("shared");
   const [note, setNote] = useState("");
-  const [day, setDay] = useState(new Date().getDate().toString());
-  const submit = () => { const a = parseFloat(amount); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, member, note, date: new Date(year, month, d).toISOString() }); };
+  const [day, setDay] = useState(String(new Date().getDate()));
+  const go = () => { const a = parseFloat(amt); if (!a || a <= 0) return; const d = Math.max(1, Math.min(31, parseInt(day) || 1)); onAdd({ amount: a, member: mem, note: note, date: new Date(year, month, d).toISOString() }); };
   return (
-    <ModalWrapper onClose={onClose} title="Novi prihod" color="#81B29A">
-      <div style={fgS}><label style={flS}>Iznos (€)</label><input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0" style={inpS} autoFocus inputMode="decimal" /></div>
-      <div style={fgS}><label style={flS}>Dan u mjesecu</label><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inpS, width: 80 }} inputMode="numeric" /></div>
-      <div style={fgS}><label style={flS}>Tko?</label><div style={{ display: "flex", gap: 6 }}>{MEMBERS.map(m => (<button key={m.id} onClick={() => setMember(m.id)} style={{ padding: "8px 12px", borderRadius: 10, border: "none", fontSize: 12, fontFamily: "'DM Sans', sans-serif", background: member === m.id ? m.color : "rgba(61,64,91,0.07)", color: member === m.id ? "#fff" : "#3D405B", transition: "all 0.2s" }}>{m.icon} {m.label}</button>))}</div></div>
-      <div style={fgS}><label style={flS}>Bilješka</label><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Plaća" style={inpS} /></div>
-      <button onClick={submit} style={{ ...subBtnS, background: "#81B29A" }}>Dodaj prihod</button>
-    </ModalWrapper>
+    <Modal onClose={onClose} title="Novi prihod" color="#81B29A">
+      <Field label="Iznos (€)"><input type="number" value={amt} onChange={e => setAmt(e.target.value)} placeholder="0" style={inp} autoFocus inputMode="decimal" /></Field>
+      <Field label="Dan u mjesecu"><input type="number" value={day} onChange={e => setDay(e.target.value)} min="1" max="31" style={{ ...inp, width: 80 }} inputMode="numeric" /></Field>
+      <Field label="Tko?">
+        <div style={{ display: "flex", gap: 6 }}>
+          {MEMBERS.map(m => <Chip key={m.id} active={mem === m.id} color={m.color} onClick={() => setMem(m.id)}>{m.icon} {m.label}</Chip>)}
+        </div>
+      </Field>
+      <Field label="Bilješka"><input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="npr. Plaća" style={inp} /></Field>
+      <button onClick={go} style={{ ...sub, background: "#81B29A" }}>Dodaj prihod</button>
+    </Modal>
   );
 }
 
-function ModalWrapper({ onClose, title, color, children }) {
+/* ──── Shared UI ──── */
+function Modal({ onClose, title, color, children }) {
   const [vis, setVis] = useState(false);
-  useEffect(() => { requestAnimationFrame(() => setVis(true)); }, []);
+  useEffect(() => { requestAnimationFrame(() => requestAnimationFrame(() => setVis(true))); }, []);
   const close = () => { setVis(false); setTimeout(onClose, 250); };
   return (
-    <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(61,64,91,0.3)", WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 100, opacity: vis ? 1 : 0, transition: "opacity 0.2s ease" }}>
+    <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(61,64,91,0.3)", WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 100, opacity: vis ? 1 : 0, transition: "opacity 0.2s" }}>
       <div onClick={e => e.stopPropagation()} style={{ background: "#FAF6F1", borderRadius: "24px 24px 0 0", padding: "28px 22px 32px", paddingBottom: "calc(32px + env(safe-area-inset-bottom))", width: "100%", maxWidth: 500, maxHeight: "85vh", overflowY: "auto", transform: vis ? "translateY(0)" : "translateY(100%)", transition: "transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, margin: 0, color: color }}>{title}</h2>
@@ -407,19 +453,27 @@ function ModalWrapper({ onClose, title, color, children }) {
   );
 }
 
-const cardS = { background: "rgba(255,255,255,0.65)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", borderRadius: 20, padding: 18, marginBottom: 14, boxShadow: "0 2px 16px rgba(61,64,91,0.04)", border: "1px solid rgba(255,255,255,0.5)" };
-const cardTitleS = { fontFamily: "'Fraunces', serif", fontSize: 15, fontWeight: 400, margin: "0 0 14px", color: "#3D405B" };
-const navBtn = { background: "rgba(61,64,91,0.07)", border: "none", width: 36, height: 36, borderRadius: 10, fontSize: 13, color: "#3D405B", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" };
-const fabS = { display: "flex", alignItems: "center", gap: 6, padding: "12px 22px", borderRadius: 18, border: "none", color: "#fff", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, boxShadow: "0 6px 24px rgba(61,64,91,0.18)" };
-const listItemS = { display: "flex", alignItems: "center", gap: 8, padding: "12px 0", borderBottom: "1px solid rgba(61,64,91,0.06)" };
-const delBtnS = { background: "none", border: "none", color: "#BDB8B0", fontSize: 14, padding: "4px 8px", borderRadius: 6, marginLeft: 4 };
-const fgS = { marginBottom: 16 };
-const flS = { display: "block", fontSize: 11, color: "#8D8A85", marginBottom: 6, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" };
-const inpS = { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid rgba(61,64,91,0.12)", fontSize: 15, fontFamily: "'DM Sans', sans-serif", color: "#3D405B", background: "#fff", outline: "none", boxSizing: "border-box" };
-const subBtnS = { width: "100%", padding: "14px", borderRadius: 14, border: "none", color: "#fff", fontSize: 15, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", marginTop: 8 };
-const settBtnS = { width: "100%", padding: "14px", borderRadius: 14, border: "none", background: "rgba(61,64,91,0.06)", color: "#3D405B", fontSize: 14, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", textAlign: "left" };
+function Field({ label, children }) {
+  return (<div style={{ marginBottom: 16 }}><label style={{ display: "block", fontSize: 11, color: "#8D8A85", marginBottom: 6, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</label>{children}</div>);
+}
+
+function Chip({ active, color, onClick, children }) {
+  return (<button onClick={onClick} style={{ padding: "8px 12px", borderRadius: 10, border: "none", fontSize: 12, background: active ? color : "rgba(61,64,91,0.07)", color: active ? "#fff" : "#3D405B", transition: "all 0.2s" }}>{children}</button>);
+}
+
+/* ──── Style tokens ──── */
+const cd = { background: "rgba(255,255,255,0.65)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", borderRadius: 20, padding: 18, marginBottom: 14, boxShadow: "0 2px 16px rgba(61,64,91,0.04)", border: "1px solid rgba(255,255,255,0.5)" };
+const ct = { fontFamily: "'Fraunces', serif", fontSize: 15, fontWeight: 400, margin: "0 0 14px", color: "#3D405B" };
+const nb = { background: "rgba(61,64,91,0.07)", border: "none", width: 36, height: 36, borderRadius: 10, fontSize: 13, color: "#3D405B", display: "flex", alignItems: "center", justifyContent: "center" };
+const fb = { display: "flex", alignItems: "center", gap: 6, padding: "12px 22px", borderRadius: 18, border: "none", color: "#fff", fontWeight: 600, boxShadow: "0 6px 24px rgba(61,64,91,0.18)" };
+const li = { display: "flex", alignItems: "center", gap: 8, padding: "12px 0", borderBottom: "1px solid rgba(61,64,91,0.06)" };
+const db = { background: "none", border: "none", color: "#BDB8B0", fontSize: 14, padding: "4px 8px", borderRadius: 6, marginLeft: 4 };
+const inp = { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid rgba(61,64,91,0.12)", fontSize: 15, fontFamily: "'DM Sans', sans-serif", color: "#3D405B", background: "#fff", outline: "none", boxSizing: "border-box" };
+const sub = { width: "100%", padding: "14px", borderRadius: 14, border: "none", color: "#fff", fontSize: 15, fontWeight: 600, marginTop: 8 };
+const sb = { width: "100%", padding: "14px", borderRadius: 14, border: "none", background: "rgba(61,64,91,0.06)", color: "#3D405B", fontSize: 14, fontWeight: 500, textAlign: "left" };
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
+
 </body>
 </html>

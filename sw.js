@@ -9,7 +9,7 @@
 // 5. localStorage (svi financijski podatci) se NE dira!
 // ═══════════════════════════════════════════════════
 
-const CACHE_VERSION = 'budzet-v1';
+const CACHE_VERSION = 'budzet-v2';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -18,7 +18,6 @@ const ASSETS_TO_CACHE = [
   'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&family=Fraunces:opsz,wght@9..144,400;9..144,700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js',
 ];
 
