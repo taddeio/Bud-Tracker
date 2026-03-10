@@ -93,6 +93,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 
+<!-- Firebase SDK (compat for non-module usage) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  // Initialize Firebase
+  firebase.initializeApp({
+    apiKey: "AIzaSyBUfqZ0XjCfFwYvXo8Bx7TnwJy5ustU0ZI",
+    authDomain: "obiteljski-budzet.firebaseapp.com",
+    projectId: "obiteljski-budzet",
+    storageBucket: "obiteljski-budzet.firebasestorage.app",
+    messagingSenderId: "442640773685",
+    appId: "1:442640773685:web:199a260903945ff47b377c"
+  });
+  window.db = firebase.firestore();
+  // Enable offline persistence
+  window.db.enablePersistence({ synchronizeTabs: true }).catch(function(err) {
+    console.log("Firestore persistence error:", err.code);
+  });
+</script>
+
 <script type="text/babel" data-type="module">
 const { useState, useEffect, useRef } = React;
 
@@ -122,10 +142,37 @@ const INC_CATEGORIES = [
 const MONTHS = ["Siječanj","Veljača","Ožujak","Travanj","Svibanj","Lipanj","Srpanj","Kolovoz","Rujan","Listopad","Studeni","Prosinac"];
 const fmt = (n) => new Intl.NumberFormat("hr-HR", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
-/* ──── Persistence ──── */
+/* ──── Persistence (Firestore + localStorage fallback) ──── */
 const DB = "family_finance_v2";
-const load = () => { try { const d = JSON.parse(localStorage.getItem(DB)); if (d) return { expenses: d.expenses || [], incomes: d.incomes || [] }; } catch {} return { expenses: [], incomes: [] }; };
-const save = (d) => { try { localStorage.setItem(DB, JSON.stringify(d)); } catch {} };
+const FIRESTORE_DOC = "families/tadic"; // Single family document
+
+// localStorage helpers (offline fallback)
+const loadLocal = () => { try { const d = JSON.parse(localStorage.getItem(DB)); if (d) return { expenses: d.expenses || [], incomes: d.incomes || [] }; } catch {} return { expenses: [], incomes: [] }; };
+const saveLocal = (d) => { try { localStorage.setItem(DB, JSON.stringify(d)); } catch {} };
+
+// Firestore helpers
+const fsRef = () => window.db ? window.db.doc(FIRESTORE_DOC) : null;
+
+const saveToFirestore = (d) => {
+  const ref = fsRef();
+  if (!ref) return;
+  ref.set({ expenses: d.expenses, incomes: d.incomes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+    .catch(err => console.log("Firestore save error:", err));
+};
+
+// Merge: combine local + remote, deduplicate by id
+const mergeData = (local, remote) => {
+  const mergeArr = (a, b) => {
+    const map = new Map();
+    a.forEach(item => map.set(item.id, item));
+    b.forEach(item => map.set(item.id, item));
+    return Array.from(map.values());
+  };
+  return {
+    expenses: mergeArr(local.expenses || [], remote.expenses || []),
+    incomes: mergeArr(local.incomes || [], remote.incomes || [])
+  };
+};
 
 const exportData = (data) => {
   const b = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -176,17 +223,62 @@ function BarViz({ data, maxVal }) {
 /* ──── Main App ──── */
 function App() {
   const now = new Date();
-  const [data, setData] = useState(load);
+  const [data, setData] = useState(loadLocal);
   const [month, setMonth] = useState(now.getMonth());
   const [year, setYear] = useState(now.getFullYear());
   const [modal, setModal] = useState(null); // "expense" | "income" | "settings" | null
   const [tab, setTab] = useState("dashboard");
   const [anim, setAnim] = useState(false);
   const [toast, setToast] = useState(null);
+  const [syncStatus, setSyncStatus] = useState("connecting"); // "connected" | "offline" | "connecting"
   const fileRef = useRef(null);
+  const isRemoteUpdate = useRef(false);
 
   useEffect(() => { setTimeout(() => setAnim(true), 50); }, []);
-  useEffect(() => { save(data); }, [data]);
+
+  // Save to localStorage + Firestore on every change (unless it came from Firestore)
+  useEffect(() => {
+    saveLocal(data);
+    if (!isRemoteUpdate.current) {
+      saveToFirestore(data);
+    }
+    isRemoteUpdate.current = false;
+  }, [data]);
+
+  // Firestore real-time listener — syncs data across devices
+  useEffect(() => {
+    const ref = fsRef();
+    if (!ref) { setSyncStatus("offline"); return; }
+
+    const unsubscribe = ref.onSnapshot(
+      (doc) => {
+        if (doc.exists) {
+          const remote = doc.data();
+          const local = loadLocal();
+          const merged = mergeData(local, remote);
+          // Only update if data actually changed
+          const localStr = JSON.stringify({ e: local.expenses.length, i: local.incomes.length });
+          const mergedStr = JSON.stringify({ e: merged.expenses.length, i: merged.incomes.length });
+          if (localStr !== mergedStr || doc.metadata.hasPendingWrites === false) {
+            isRemoteUpdate.current = true;
+            setData(merged);
+          }
+        } else {
+          // First time: push local data to Firestore
+          const local = loadLocal();
+          if (local.expenses.length > 0 || local.incomes.length > 0) {
+            saveToFirestore(local);
+          }
+        }
+        setSyncStatus("connected");
+      },
+      (err) => {
+        console.log("Firestore listener error:", err);
+        setSyncStatus("offline");
+      }
+    );
+    return () => unsubscribe();
+  }, []);
 
   const showToast = (m) => { setToast(m); setTimeout(() => setToast(null), 2200); };
 
@@ -232,7 +324,10 @@ function App() {
 
   const reset = () => {
     if (confirm("Obrisati SVE podatke?\nPreporučamo prvo backup.")) {
-      setData({ expenses: [], incomes: [] }); localStorage.removeItem(DB); showToast("Obrisano"); setModal(null);
+      const empty = { expenses: [], incomes: [] };
+      setData(empty); localStorage.removeItem(DB);
+      saveToFirestore(empty);
+      showToast("Obrisano"); setModal(null);
     }
   };
 
@@ -245,7 +340,10 @@ function App() {
       <div style={{ padding: "28px 20px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: 500, margin: "0 auto" }}>
         <div>
           <h1 style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 24, margin: 0, letterSpacing: "-0.5px" }}>Obiteljski budžet</h1>
-          <p style={{ margin: "3px 0 0", fontSize: 12, color: "#8D8A85", fontWeight: 300 }}>Sve na jednom mjestu ✨</p>
+          <p style={{ margin: "3px 0 0", fontSize: 12, color: "#8D8A85", fontWeight: 300 }}>
+            {syncStatus === "connected" ? "🟢 Synced" : syncStatus === "connecting" ? "🟡 Connecting..." : "🔴 Offline"}{" "}
+            <span style={{ opacity: 0.6 }}>✨</span>
+          </p>
         </div>
         <button onClick={() => setModal("settings")} style={{ background: "rgba(61,64,91,0.07)", border: "none", width: 38, height: 38, borderRadius: 12, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>⚙️</button>
       </div>
@@ -378,7 +476,7 @@ function App() {
             <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
             <button onClick={reset} style={{ ...sb, color: "#E07A5F" }}>🗑️ Obriši sve podatke</button>
             <hr style={{ border: "none", borderTop: "1px solid rgba(61,64,91,0.08)", margin: "4px 0" }} />
-            <p style={{ fontSize: 11, color: "#BDB8B0", lineHeight: 1.5 }}>Podatci se čuvaju lokalno (localStorage). Ažuriranje app-a NE briše podatke. Za sigurnost, redovito preuzmi backup.</p>
+            <p style={{ fontSize: 11, color: "#BDB8B0", lineHeight: 1.5 }}>Podatci se sinkroniziraju preko oblaka (Firebase) i čuvaju lokalno kao backup. Oba mobitela vide iste podatke u realnom vremenu! 🔄</p>
           </div>
         </Modal>
       )}
